@@ -17,7 +17,7 @@ interface BasicDao {
 
     companion object {
 
-        val USER_URL = "http://192.168.1.112:9001/consumer/user/"
+        val USER_URL = "http://192.168.1.105:9001/consumer/user/"
 
         inline fun <reified T: BasicDao> create(url: String): T {
             val baseUrl = url

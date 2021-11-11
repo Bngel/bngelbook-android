@@ -103,17 +103,31 @@ class LoginActivity : ComponentActivity() {
                             val password = userPassword
                             UserApi.postUserLogin(account, password) { result ->
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                if (result != null && result.code == 200) {
-                                    intent.putExtra("loginState", true)
-                                    intent.putExtra("userInfo", result.data)
-                                    this@LoginActivity.setResult(RESULT_OK, intent)
-                                    Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
-                                    finish()
+                                if (result != null) {
+                                    when (result.code) {
+                                        200 -> {
+                                            intent.putExtra("loginState", true)
+                                            intent.putExtra("userInfo", result.data)
+                                            this@LoginActivity.setResult(RESULT_OK, intent)
+                                            Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
+                                            finish()
+                                        }
+                                        400 -> {
+                                            intent.putExtra("loginState", false)
+                                            this@LoginActivity.setResult(RESULT_OK, intent)
+                                            Toast.makeText(this@LoginActivity, "用户名或密码错误", Toast.LENGTH_SHORT).show()
+                                        }
+                                        else -> {
+                                            intent.putExtra("loginState", false)
+                                            this@LoginActivity.setResult(RESULT_OK, intent)
+                                            Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
                                 }
                                 else {
                                     intent.putExtra("loginState", false)
                                     this@LoginActivity.setResult(RESULT_OK, intent)
-                                    Toast.makeText(this@LoginActivity, "用户名或密码错误", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
                                 }
                                 loading.value = false
                             }

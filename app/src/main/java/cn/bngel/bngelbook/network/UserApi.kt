@@ -17,4 +17,20 @@ object UserApi: BaseApi() {
         userService.postUserLogin(account, password).enqueue(basicCallback(event))
     }
 
+    fun postUser(user: User, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        userService.postUser(user).enqueue(basicCallback(event))
+    }
+
+    fun deleteUserById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        userService.deleteUserById(id).enqueue(basicCallback(event))
+    }
+
+    fun updateUserById(user: User, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        userService.updateUserById(user).enqueue(basicCallback(event))
+    }
+
+    fun getUserById(id: Long, event: ((CommonResult<User>?) -> Unit)? = null) {
+        userService.getUserById(id).enqueue(basicCallback(event))
+    }
+
 }

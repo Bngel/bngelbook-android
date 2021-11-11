@@ -3,7 +3,7 @@ package cn.bngel.bngelbook.data.userDao
 import java.io.Serializable
 
 data class User(
-    val id: Int,
+    val id: Long,
     val birthday: String?,
     val email: String?,
     val gender: Int?,
