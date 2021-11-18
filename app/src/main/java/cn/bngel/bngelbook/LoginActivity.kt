@@ -24,6 +24,7 @@ import androidx.compose.ui.window.DialogProperties
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import com.google.accompanist.glide.rememberGlidePainter
+import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 
 class LoginActivity : ComponentActivity() {
 
@@ -37,7 +38,6 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun LoginPage() {
@@ -145,28 +145,4 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun Dialog_Loading() {
-        val dialogProperties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false
-        )
-        Dialog(onDismissRequest = {},
-            properties = dialogProperties,
-        ) {
-            Column(modifier = Modifier
-                .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
-                .padding(top = 30.dp, bottom = 20.dp, start = 30.dp, end = 30.dp)) {
-                Image(painter = rememberGlidePainter(
-                    request = R.drawable.loading,
-                    previewPlaceholder = R.drawable.loading
-                ), contentDescription = "loadingGIF", modifier = Modifier.width(40.dp).height(40.dp)
-                    .align(Alignment.CenterHorizontally))
-                val loadingText by remember {
-                    mutableStateOf("Loading")
-                }
-                Text(text = loadingText, modifier = Modifier.padding(10.dp))
-            }
-        }
-    }
 }

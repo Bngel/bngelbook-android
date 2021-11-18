@@ -5,11 +5,11 @@ import java.sql.Date
 
 data class Bill(
     val id: Long,
-    val type: String,
-    val balance: Double,
-    val accountId: Long? = null,
+    val accountId: Long?,
+    val balance: Int,
     val bookId: Long,
-    val tags: String? = null,
     val createTime: Date,
-    val io: Int
+    val io: Int,
+    val tags: String?,
+    val type: String
 ): Serializable
