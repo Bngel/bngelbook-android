@@ -2,6 +2,7 @@ package cn.bngel.bngelbook
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -36,15 +37,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.BillType
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
+import cn.bngel.bngelbook.ui.widget.UiWidget
+import java.sql.Date
 
 class BillSaveActivity : ComponentActivity() {
 
     private val curType = mutableStateOf("吃喝")
     private val curTags = mutableStateOf("")
     private val curBalance = mutableStateOf("")
+    private val curIo = mutableStateOf(0)
+    private val curAccount = mutableStateOf<Long?>(null)
+    private val loading = mutableStateOf(false)
     private var curPoint = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +61,8 @@ class BillSaveActivity : ComponentActivity() {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     BillSavePage()
+                    if (loading.value)
+                        UiWidget.Dialog_Loading()
                 }
             }
         }
@@ -223,7 +234,8 @@ class BillSaveActivity : ComponentActivity() {
     @Composable
     fun CalCell(cell: String, modifier: Modifier = Modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-            modifier = modifier.border(width = 1.dp, color = Color.Yellow)
+            modifier = modifier
+                .border(width = 1.dp, color = Color.Yellow)
                 .clickable { calculate(cell) }) {
             Text(text = cell, modifier = Modifier.padding(10.dp), fontSize = 18.sp, color = Color.Yellow)
         }
@@ -260,6 +272,30 @@ class BillSaveActivity : ComponentActivity() {
             }
             if (curBalance.value != ""){
                 curBalance.value = curBalance.value.substring(0, curBalance.value.length-1)
+            }
+        }
+        else if (key == "完成") {
+            postBill()
+        }
+    }
+
+    private fun postBill() {
+        loading.value = true
+        val balance =
+            when (curBalance.value) {
+                "" -> 0.0
+                else -> curBalance.value.trim('.').toDouble()
+            }
+        val bill = Bill(0L, curAccount.value, balance, 4L, null,
+                curIo.value, curTags.value, curType.value)
+        BillApi.postBill(bill) {
+            loading.value = false
+            if (it != null && it.code == 200) {
+                Toast.makeText(this@BillSaveActivity, "创建账单成功", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            else {
+                Toast.makeText(this@BillSaveActivity, "创建账单失败", Toast.LENGTH_SHORT).show()
             }
         }
     }

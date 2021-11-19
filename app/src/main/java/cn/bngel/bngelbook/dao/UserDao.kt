@@ -32,7 +32,7 @@ interface UserDao: BasicDao {
     /**
      * User - 查询用户
      */
-    @GET
+    @GET(".")
     fun getUserById(
         @Query("id") id: Long
     ): Call<CommonResult<User>>
@@ -40,20 +40,19 @@ interface UserDao: BasicDao {
     /**
      * User - 创建用户
      */
-    @FormUrlEncoded
-    @POST
+    @POST(".")
     fun postUser(@Body user: User): Call<CommonResult<Boolean>>
 
     /**
      * User - 注销用户
      */
-    @DELETE
+    @DELETE(".")
     fun deleteUserById(@Field("id") id: Long): Call<CommonResult<Boolean>>
 
     /**
      * User - 修改用户信息
      */
     @FormUrlEncoded
-    @PUT
+    @PUT(".")
     fun updateUserById(@Body user: User): Call<CommonResult<Boolean>>
 }

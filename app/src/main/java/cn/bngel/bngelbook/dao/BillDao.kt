@@ -17,27 +17,25 @@ interface BillDao: BasicDao {
     /**
      * Bill - 创建账单
      */
-    @POST
-    @FormUrlEncoded
+    @POST(".")
     fun postBill(@Body bill: Bill): Call<CommonResult<Boolean>>
 
     /**
      * Bill - 删除账单
      */
-    @DELETE
+    @DELETE(".")
     fun deleteBillById(@Field("id") id: Long): Call<CommonResult<Boolean>>
 
     /**
      * Bill - 修改账单信息
      */
-    @PUT
-    @FormUrlEncoded
+    @PUT(".")
     fun updateBillById(@Body bill: Bill): Call<CommonResult<Boolean>>
 
     /**
      * Bill - 查询账单
      */
-    @GET
+    @GET(".")
     fun getBillById(@Query("id") id: Long): Call<CommonResult<Bill>>
 
     /**
