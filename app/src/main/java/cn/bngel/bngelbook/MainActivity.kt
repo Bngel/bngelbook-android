@@ -26,16 +26,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.ui.page.PageHome
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.launch
-
-import cn.bngel.bngelbook.ui.page.HomePage.HomePage
 
 
 class MainActivity : ComponentActivity() {
 
-    var loginState = mutableStateOf(false)
+    private val loginState = mutableStateOf(false)
+    private val pageState = mutableStateOf(MainPages.HOME_PAGE)
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         val data = res.data
@@ -43,6 +45,16 @@ class MainActivity : ComponentActivity() {
             loginState.value = data.getBooleanExtra("loginState", false)
             if (loginState.value) {
                 val user = data.getSerializableExtra("userInfo") as User
+                GlobalVariables.USER = user
+            }
+            val updateState = data.getBooleanExtra("updateState", false)
+            if (updateState) {
+                when (pageState.value) {
+                    MainPages.HOME_PAGE -> {
+                        if (!PageHome.billUpdateState.value)
+                            PageHome.billUpdateState.value = true
+                    }
+                }
             }
         }
     }
@@ -57,6 +69,16 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+/*
+    override fun onResume() {
+        super.onResume()
+        when (pageState.value) {
+            MainPages.HOME_PAGE -> {
+                if (PageHome.billUpdateState.value)
+                    PageHome.billUpdateState.value = true
+            }
+        }
+    }*/
 
     @Composable
     fun MainPage() {
@@ -80,7 +102,9 @@ class MainActivity : ComponentActivity() {
             },
             floatingActionButtonPosition = FabPosition.End
         ) {
-            HomePage()
+            when (pageState.value) {
+                MainPages.HOME_PAGE -> PageHome.HomePage()
+            }
         }
     }
 

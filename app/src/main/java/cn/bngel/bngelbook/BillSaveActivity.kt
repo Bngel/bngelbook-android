@@ -1,48 +1,34 @@
 package cn.bngel.bngelbook
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
+import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.accountDao.Account
 import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.BillType
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
-import java.sql.Date
 
 class BillSaveActivity : ComponentActivity() {
 
@@ -51,9 +37,10 @@ class BillSaveActivity : ComponentActivity() {
     private val curBalance = mutableStateOf("")
     private val curIo = mutableStateOf(0)
     private val curAccount = mutableStateOf<Long?>(null)
+    private val curAccountName = mutableStateOf("不选账户")
     private val loading = mutableStateOf(false)
+    private val accountSelected = mutableStateOf(false)
     private var curPoint = -1
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +63,7 @@ class BillSaveActivity : ComponentActivity() {
             BillTypeChoices(types = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他"),size = 5,
                 modifier = Modifier.weight(1F))
             TagsRow(tags = listOf("test","nice","牛","厉害"))
-            BottomRow(account = "不选账户")
+            BottomRow(account = curAccountName.value)
             Calculator()
         }
     }
@@ -89,14 +76,28 @@ class BillSaveActivity : ComponentActivity() {
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                         .width(30.dp)
-                        .height(30.dp))
+                        .height(30.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            val intent = Intent(this@BillSaveActivity, MainActivity::class.java)
+                            setResult(RESULT_CANCELED, intent)
+                            finish()
+                        })
             }
             Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
                 Image(painter = painterResource(id = R.drawable.ok), contentDescription = "ok_btn",
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                         .width(30.dp)
-                        .height(30.dp))
+                        .height(30.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            postBill()
+                        })
             }
         }
     }
@@ -191,14 +192,18 @@ class BillSaveActivity : ComponentActivity() {
             Row(modifier = Modifier
                 .weight(1F)
                 .padding(start = 10.dp, end = 10.dp)) {
-                Text(text = account, fontSize = 15.sp)
+                Text(text = account, fontSize = 15.sp, modifier = Modifier.clickable {
+                    loading.value = true
+                    accountSelected.value = true
+                })
             }
             Text(text = if (curTags.value == "") "备注" else curTags.value.trim(), fontSize = 15.sp, modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
                 .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(10.dp))
                 .padding(start = 10.dp, end = 10.dp, top = 3.dp, bottom = 3.dp))
-
         }
+        if (accountSelected.value)
+            AccountsDialog()
     }
 
     @Composable
@@ -238,6 +243,68 @@ class BillSaveActivity : ComponentActivity() {
                 .border(width = 1.dp, color = Color.Yellow)
                 .clickable { calculate(cell) }) {
             Text(text = cell, modifier = Modifier.padding(10.dp), fontSize = 18.sp, color = Color.Yellow)
+        }
+    }
+
+    @Composable
+    fun AccountsDialog() {
+        Dialog(onDismissRequest = {}) {
+            val user = GlobalVariables.USER
+            var selectedAccount = remember {
+                mutableStateOf("")
+            }
+            var selectedAccountId = remember {
+                mutableStateOf(curAccount.value)
+            }
+            var accounts = remember {
+                mutableStateOf<List<Account>?>(null)
+            }
+            if (user?.id != null) {
+                val userId = user.id
+                AccountApi.getAccountsByUserId(userId) { result ->
+                    loading.value = false
+                    accounts.value = result?.data
+                }
+            }
+            else {
+                loading.value = false
+                Toast.makeText(this@BillSaveActivity, "请先登录", Toast.LENGTH_SHORT).show()
+            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
+                    .padding(top = 40.dp, bottom = 40.dp, start = 20.dp, end = 20.dp)
+                    .fillMaxWidth(0.7F)
+                    .fillMaxHeight(0.5F)) {
+                LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, contentPadding = PaddingValues(5.dp),
+                        modifier = Modifier.weight(1F)) {
+                    if (accounts.value != null) {
+                        items(accounts.value!!) { account ->
+                            if (account.name != null && account.id != null) {
+                                Row {
+                                    RadioButton(selected = account.name == selectedAccount.value,
+                                        onClick = {
+                                            selectedAccount.value = account.name
+                                            selectedAccountId.value = account.id
+                                        })
+                                    Text(
+                                        text = account.name,
+                                        modifier = Modifier.padding(start = 10.dp),
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                Button(onClick = {
+                    accountSelected.value = false
+                    curAccountName.value = selectedAccount.value
+                    curAccount.value = selectedAccountId.value
+                }, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, Color(0xFF66CCFF))) {
+                    Text(text = "确定", color = Color(0xFF66CCFF), fontSize = 16.sp)
+                }
+            }
         }
     }
 
@@ -292,6 +359,9 @@ class BillSaveActivity : ComponentActivity() {
             loading.value = false
             if (it != null && it.code == 200) {
                 Toast.makeText(this@BillSaveActivity, "创建账单成功", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this@BillSaveActivity, MainActivity::class.java)
+                intent.putExtra("updateState", true)
+                setResult(RESULT_OK, intent)
                 finish()
             }
             else {

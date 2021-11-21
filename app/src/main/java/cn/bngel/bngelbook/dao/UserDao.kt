@@ -52,7 +52,6 @@ interface UserDao: BasicDao {
     /**
      * User - 修改用户信息
      */
-    @FormUrlEncoded
     @PUT(".")
     fun updateUserById(@Body user: User): Call<CommonResult<Boolean>>
 }

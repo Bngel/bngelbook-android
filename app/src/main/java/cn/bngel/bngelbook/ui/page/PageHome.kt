@@ -28,32 +28,25 @@ import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 import java.sql.Date
 
-object HomePage {
+object PageHome {
+
+    val billUpdateState = mutableStateOf(true)
+    private val loadingBills = mutableStateOf(false)
+    private val billList = mutableListOf<Bill>()
+    private val curBalance = mutableStateOf(0.0)
+    private val curCost = mutableStateOf(0.0)
+    private val curIncome = mutableStateOf(0.0)
 
     @Composable
     fun HomePage() {
         Column {
             Home_Overview()
-            val billList = remember {
-                mutableListOf<Bill>()
-            }
-            var loadingBills = remember {
-                mutableStateOf(true)
-            }
+            if (billUpdateState.value)
+                updateBills()
             if (loadingBills.value) {
                 Dialog_Loading()
             }
-            BillApi.getBillsByAccountId(1L) { bills ->
-                Log.d("bngelbook_bill", bills.toString())
-                if (bills != null) {
-                    if (bills.data != null) {
-                        val data = bills.data
-                        billList.addAll(data)
-                    }
-                }
-                loadingBills.value = false
-            }
-            Home_BillList(bills = billList)
+            Home_BillList(billList)
         }
     }
 
@@ -71,7 +64,7 @@ object HomePage {
             Row{
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)) {
-                    Text(text = "1313.13", fontSize = 25.sp)
+                    Text(text = curBalance.value.toString(), fontSize = 25.sp)
                     Text(text = "13月结余", fontSize = 16.sp)
                 }
             }
@@ -80,14 +73,14 @@ object HomePage {
                     modifier = Modifier
                         .weight(1F)
                         .padding(10.dp)) {
-                    Text(text = "1313.13", fontSize = 18.sp)
+                    Text(text = curIncome.value.toString(), fontSize = 18.sp)
                     Text(text = "13月收入", fontSize = 13.sp)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .weight(1F)
                         .padding(10.dp)) {
-                    Text(text = "1313.13", fontSize = 18.sp)
+                    Text(text = curCost.value.toString(), fontSize = 18.sp)
                     Text(text = "13月支出", fontSize = 13.sp)
                 }
             }
@@ -115,7 +108,7 @@ object HomePage {
             Column(modifier = Modifier
                 .weight(1F)
                 .align(Alignment.CenterVertically)) {
-                Text(text = bill.type, fontSize = 18.sp)
+                Text(text = bill.type?:"", fontSize = 18.sp)
                 Text(text = bill.tags?:"", fontSize = 12.sp)
             }
             Text(text = bill.balance.toString(), fontSize = 20.sp, modifier = Modifier
@@ -125,4 +118,36 @@ object HomePage {
                 ))
         }
     }
+
+    private fun updateBills() {
+        loadingBills.value = true
+        BillApi.getBillsByAccountId(1L) { bills ->
+            if (bills != null) {
+                if (bills.code == 200)
+                    billUpdateState.value = false
+                if (bills.data != null) {
+                    billList.clear()
+                    val data = bills.data
+                    var totalIncome = 0.0
+                    var totalCost = 0.0
+                    for (bill in data) {
+                        if (bill.balance != null) {
+                            if (bill.io == 1) {
+                                totalIncome += bill.balance
+                            }
+                            else {
+                                totalCost += bill.balance
+                            }
+                        }
+                    }
+                    curIncome.value = totalIncome
+                    curCost.value = totalCost
+                    curBalance.value = totalIncome - totalCost
+                    billList.addAll(data)
+                }
+            }
+            loadingBills.value = false
+        }
+    }
+
 }

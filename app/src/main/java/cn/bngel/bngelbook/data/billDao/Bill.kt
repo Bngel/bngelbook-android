@@ -6,10 +6,10 @@ import java.sql.Date
 data class Bill(
     val id: Long?,
     val accountId: Long?,
-    val balance: Double,
-    val bookId: Long,
+    val balance: Double?,
+    val bookId: Long?,
     val createTime: Date?,
-    val io: Int,
+    val io: Int?,
     val tags: String?,
-    val type: String
+    val type: String?
 ): Serializable
