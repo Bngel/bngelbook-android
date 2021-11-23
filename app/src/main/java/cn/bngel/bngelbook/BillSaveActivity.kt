@@ -38,8 +38,9 @@ class BillSaveActivity : ComponentActivity() {
     private val curIo = mutableStateOf(0)
     private val curAccount = mutableStateOf<Long?>(null)
     private val curAccountName = mutableStateOf("不选账户")
-    private val loading = mutableStateOf(false)
     private val accountSelected = mutableStateOf(false)
+    private val accountList = mutableListOf<Account>()
+    private val loading = mutableStateOf(false)
     private var curPoint = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -270,38 +271,29 @@ class BillSaveActivity : ComponentActivity() {
 
     @Composable
     fun AccountsDialog() {
+        var selectedAccount = remember {
+            mutableStateOf("")
+        }
+        var selectedAccountId = remember {
+            mutableStateOf(curAccount.value)
+        }
+        getUserAccounts()
         Dialog(onDismissRequest = {}) {
-            val user = GlobalVariables.USER
-            var selectedAccount = remember {
-                mutableStateOf("")
-            }
-            var selectedAccountId = remember {
-                mutableStateOf(curAccount.value)
-            }
-            var accounts = remember {
-                mutableStateOf<List<Account>?>(null)
-            }
-            if (user?.id != null) {
-                val userId = user.id
-                AccountApi.getAccountsByUserId(userId) { result ->
-                    loading.value = false
-                    accounts.value = result?.data
-                }
-            }
-            else {
-                loading.value = false
-                Toast.makeText(this@BillSaveActivity, "请先登录", Toast.LENGTH_SHORT).show()
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
-                    .padding(top = 40.dp, bottom = 40.dp, start = 20.dp, end = 20.dp)
-                    .fillMaxWidth(0.7F)
-                    .fillMaxHeight(0.5F)) {
-                LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, contentPadding = PaddingValues(5.dp),
-                        modifier = Modifier.weight(1F)) {
-                    if (accounts.value != null) {
-                        items(accounts.value!!) { account ->
+                    .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth(0.8F)
+                    .fillMaxHeight(0.6F)
+            ) {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1F)
+                        .padding(10.dp)
+                ) {
+                    if (accountList.size != 0) {
+                        items(accountList) { account ->
                             if (account.name != null && account.id != null) {
                                 Row {
                                     RadioButton(selected = account.name == selectedAccount.value,
@@ -329,6 +321,22 @@ class BillSaveActivity : ComponentActivity() {
                     }
                     .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
             }
+        }
+    }
+
+    private fun getUserAccounts() {
+        val user = GlobalVariables.USER
+        if (user?.id != null) {
+            val userId = user.id
+            AccountApi.getAccountsByUserId(userId) { result ->
+                loading.value = false
+                if (result?.data != null)
+                    accountList.addAll(result.data)
+            }
+        }
+        else {
+            loading.value = false
+            Toast.makeText(this@BillSaveActivity, "请先登录", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -377,7 +385,7 @@ class BillSaveActivity : ComponentActivity() {
                 "" -> 0.0
                 else -> curBalance.value.trim('.').toDouble()
             }
-        val bill = Bill(0L, curAccount.value, balance, 4L, null,
+        val bill = Bill(null, curAccount.value, balance, GlobalVariables.BOOK?.id?:4L, null,
                 curIo.value, curTags.value, curType.value)
         BillApi.postBill(bill) {
             loading.value = false
