@@ -1,32 +1,27 @@
 package cn.bngel.bngelbook.ui.page
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.billDao.Bill
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
-import java.sql.Date
 
 object PageHome {
 
@@ -36,6 +31,7 @@ object PageHome {
     private val curBalance = mutableStateOf(0.0)
     private val curCost = mutableStateOf(0.0)
     private val curIncome = mutableStateOf(0.0)
+    private val curBookId = mutableStateOf(4L)
 
     @Composable
     fun HomePage() {
@@ -59,7 +55,9 @@ object PageHome {
             Row(modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 15.dp)){
-                Text(text = "13月")
+                Text(text = "13月", modifier = Modifier
+                    .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(10.dp))
+                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp))
             }
             Row{
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -108,8 +106,8 @@ object PageHome {
             Column(modifier = Modifier
                 .weight(1F)
                 .align(Alignment.CenterVertically)) {
-                Text(text = bill.type?:"", fontSize = 18.sp)
-                Text(text = bill.tags?:"", fontSize = 12.sp)
+                Text(text = bill.type?:"", fontSize = 18.sp, textAlign = TextAlign.Start)
+                Text(text = if (bill.tags!=null) bill.tags.trim() else "", fontSize = 14.sp, color = Color.Gray, textAlign = TextAlign.Start)
             }
             Text(text = bill.balance.toString(), fontSize = 20.sp, modifier = Modifier
                 .padding(start = 10.dp, end = 15.dp)
@@ -121,7 +119,7 @@ object PageHome {
 
     private fun updateBills() {
         loadingBills.value = true
-        BillApi.getBillsByAccountId(1L) { bills ->
+        BillApi.getBillsByBookId(curBookId.value) { bills ->
             if (bills != null) {
                 if (bills.code == 200)
                     billUpdateState.value = false

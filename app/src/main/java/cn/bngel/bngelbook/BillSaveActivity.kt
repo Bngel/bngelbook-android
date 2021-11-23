@@ -62,7 +62,7 @@ class BillSaveActivity : ComponentActivity() {
             BillBalanceRow()
             BillTypeChoices(types = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他"),size = 5,
                 modifier = Modifier.weight(1F))
-            TagsRow(tags = listOf("test","nice","牛","厉害"))
+            TagsRow(tags = listOf("早餐","午餐","晚餐","超市"))
             BottomRow(account = curAccountName.value)
             Calculator()
         }
@@ -70,34 +70,56 @@ class BillSaveActivity : ComponentActivity() {
 
     @Composable
     fun BillSaveTitle() {
-        Row {
-            Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
-                Image(painter = painterResource(id = R.drawable.close), contentDescription = "close_btn",
-                    modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
-                        .width(30.dp)
-                        .height(30.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            val intent = Intent(this@BillSaveActivity, MainActivity::class.java)
-                            setResult(RESULT_CANCELED, intent)
-                            finish()
-                        })
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
+                    Image(painter = painterResource(id = R.drawable.close), contentDescription = "close_btn",
+                        modifier = Modifier
+                            .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
+                            .width(30.dp)
+                            .height(30.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                val intent = Intent(this@BillSaveActivity, MainActivity::class.java)
+                                setResult(RESULT_CANCELED, intent)
+                                finish()
+                            })
+                }
+                Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
+                    Image(painter = painterResource(id = R.drawable.ok), contentDescription = "ok_btn",
+                        modifier = Modifier
+                            .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
+                            .width(30.dp)
+                            .height(30.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                postBill()
+                            })
+                }
             }
-            Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
-                Image(painter = painterResource(id = R.drawable.ok), contentDescription = "ok_btn",
-                    modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
-                        .width(30.dp)
-                        .height(30.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            postBill()
-                        })
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)) {
+                    Text(text = "收入", color = if (curIo.value == 1) Color(0xFFFFFFFF) else Color(0xFF66CCFF),
+                        modifier = Modifier.border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(1.dp))
+                            .background(color = if (curIo.value == 1) Color(0xFF66CCFF) else Color(0xFFFFFFFF))
+                            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { if (curIo.value != 1) curIo.value = 1 })
+                    Text(text = "支出", color = if (curIo.value == 0) Color(0xFFFFFFFF) else Color(0xFF66CCFF),
+                        modifier = Modifier.border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(1.dp))
+                            .background(color = if (curIo.value == 0) Color(0xFF66CCFF) else Color(0xFFFFFFFF))
+                            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { if (curIo.value != 0) curIo.value = 0 })
+                }
             }
         }
     }
@@ -297,13 +319,15 @@ class BillSaveActivity : ComponentActivity() {
                         }
                     }
                 }
-                Button(onClick = {
-                    accountSelected.value = false
-                    curAccountName.value = selectedAccount.value
-                    curAccount.value = selectedAccountId.value
-                }, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, Color(0xFF66CCFF))) {
-                    Text(text = "确定", color = Color(0xFF66CCFF), fontSize = 16.sp)
-                }
+                Text(text = "确定", fontSize = 16.sp, color = Color(0xFF66CCFF), modifier = Modifier
+                    .background(shape = RoundedCornerShape(10.dp), color = Color.White)
+                    .border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(10.dp))
+                    .clickable  {
+                        accountSelected.value = false
+                        curAccountName.value = selectedAccount.value
+                        curAccount.value = selectedAccountId.value
+                    }
+                    .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
             }
         }
     }

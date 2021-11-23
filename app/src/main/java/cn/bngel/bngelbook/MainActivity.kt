@@ -69,16 +69,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-/*
-    override fun onResume() {
-        super.onResume()
-        when (pageState.value) {
-            MainPages.HOME_PAGE -> {
-                if (PageHome.billUpdateState.value)
-                    PageHome.billUpdateState.value = true
-            }
-        }
-    }*/
 
     @Composable
     fun MainPage() {
@@ -114,18 +104,18 @@ class MainActivity : ComponentActivity() {
             Column {
                 Drawer_ProfileCard(profile = "", username = "bngel", daysCount = 3000)
                 Column(modifier = Modifier.weight(1f)) {
-                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "功能Home") {}
-                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "功能Face") {}
-                    Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "功能Favorite") {}
+                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") {}
+                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Face") {}
+                    Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "Favorite") {}
                     Drawer_Function(
                         imageVector = Icons.Filled.AccountBox,
-                        functionName = "功能AccountBox"
+                        functionName = "AccountBox"
                     ) {}
                     Drawer_Function(
                         imageVector = Icons.Filled.AccountCircle,
-                        functionName = "功能AccountCircle"
+                        functionName = "AccountCircle"
                     ) {}
-                    Drawer_Function(imageVector = Icons.Filled.Info, functionName = "功能Info") {}
+                    Drawer_Function(imageVector = Icons.Filled.Info, functionName = "Info") {}
                 }
                 Row(modifier = Modifier
                     .clickable(
