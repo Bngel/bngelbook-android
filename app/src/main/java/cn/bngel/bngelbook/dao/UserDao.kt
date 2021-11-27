@@ -54,4 +54,10 @@ interface UserDao: BasicDao {
      */
     @PUT(".")
     fun updateUserById(@Body user: User): Call<CommonResult<Boolean>>
+
+    /**
+     * User - 查询用户注册时间长度
+     */
+    @GET("registerDays")
+    fun getUserRegisterDays(@Query("id") id: Long): Call<CommonResult<Int>>
 }

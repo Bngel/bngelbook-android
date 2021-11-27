@@ -37,7 +37,7 @@ object PageAccount {
 
     private val loading = mutableStateOf(false)
     private val accounts = mutableListOf<Account>()
-    private val updateAccountsState = mutableStateOf(true)
+    val accountsUpdateState = mutableStateOf(true)
     private val balance = mutableStateOf(0.00)
 
     @Composable
@@ -75,7 +75,7 @@ object PageAccount {
 
     @Composable
     fun Account_Card() {
-        if (updateAccountsState.value) {
+        if (accountsUpdateState.value) {
             loading.value = true
             AccountApi.getAccountsByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
                 if (result?.data != null) {
@@ -87,7 +87,7 @@ object PageAccount {
                     }
                 }
                 loading.value = false
-                updateAccountsState.value = false
+                accountsUpdateState.value = false
             }
         }
         if (accounts.size > 0) {

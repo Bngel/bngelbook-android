@@ -3,6 +3,7 @@ package cn.bngel.bngelbook
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     private val loginState = mutableStateOf(GlobalVariables.USER != null)
     private val pageState = mutableStateOf(MainPages.HOME_PAGE)
+    private val userDays = mutableStateOf(0)
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
 
@@ -65,6 +67,10 @@ class MainActivity : ComponentActivity() {
                         if (!PageHome.billUpdateState.value)
                             PageHome.billUpdateState.value = true
                     }
+                    MainPages.ACCOUNT_PAGE -> {
+                        if (!PageAccount.accountsUpdateState.value)
+                            PageAccount.accountsUpdateState.value = true
+                    }
                 }
             }
         }
@@ -72,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        autoLogin()
+        initData()
         setContent {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
@@ -116,7 +122,7 @@ class MainActivity : ComponentActivity() {
     fun Drawer() {
         if (loginState.value) {
             Column {
-                Drawer_ProfileCard(profile = "", username = "bngel", daysCount = 3000)
+                Drawer_ProfileCard(profile = "", username = "bngel", daysCount = userDays.value)
                 Column(modifier = Modifier.weight(1f)) {
                     Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") { pageState.value = MainPages.HOME_PAGE }
                     Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "Account") { pageState.value = MainPages.ACCOUNT_PAGE }
@@ -140,7 +146,7 @@ class MainActivity : ComponentActivity() {
         }
         else {
             Column {
-                Drawer_ProfileCard(profile = "", username = "点击登录", daysCount = 3000)
+                Drawer_ProfileCard(profile = "", username = "点击登录", daysCount = 0)
             }
         }
     }
@@ -219,6 +225,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun initData() {
+        autoLogin()
+    }
+
+    private fun initUserDays() {
+        if (loginState.value) {
+            UserApi.getUserRegisterDays(GlobalVariables.USER?.id?:0L) { day ->
+                userDays.value = day?.data?:0
+            }
+        }
+    }
+
     private fun autoLogin() {
         getSharedPreferences("loginState", MODE_PRIVATE).apply {
             if (getBoolean("state", false)) {
@@ -230,6 +248,7 @@ class MainActivity : ComponentActivity() {
                             200 -> {
                                 GlobalVariables.USER = result.data
                                 loginState.value = true
+                                initUserDays()
                             }
                             else -> {
                                 edit{

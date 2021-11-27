@@ -33,4 +33,8 @@ object UserApi: BaseApi() {
         userService.getUserById(id).enqueue(basicCallback(event))
     }
 
+    fun getUserRegisterDays(id: Long, event: ((CommonResult<Int>?) -> Unit)? = null) {
+        userService.getUserRegisterDays(id).enqueue(basicCallback(event))
+    }
+
 }

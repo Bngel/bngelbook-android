@@ -65,16 +65,24 @@ object PageHome {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color(0xFF66CCFF))) {
-            Row(modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 15.dp)
-                .clickable {
-                    bookSelected.value = true
+            if (curBook.value != null) {
+                Row(modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 15.dp)
+                    .clickable {
+                        bookSelected.value = true
+                    }
+                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))) {
+                    Text(
+                        text = curBook.value?.name ?: "", modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color.Black,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                    )
                 }
-                .background(color = Color.White, shape = RoundedCornerShape(10.dp))){
-                Text(text = curBook.value?.name?:"", modifier = Modifier
-                    .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(10.dp))
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp))
             }
             Row{
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
