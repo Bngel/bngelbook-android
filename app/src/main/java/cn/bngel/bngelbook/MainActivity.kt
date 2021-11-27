@@ -119,11 +119,11 @@ class MainActivity : ComponentActivity() {
                 Drawer_ProfileCard(profile = "", username = "bngel", daysCount = 3000)
                 Column(modifier = Modifier.weight(1f)) {
                     Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") { pageState.value = MainPages.HOME_PAGE }
-                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Account") { pageState.value = MainPages.ACCOUNT_PAGE }
-                    Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "Favorite") {}
-                    Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "AccountBox") {}
-                    Drawer_Function(imageVector = Icons.Filled.AccountCircle, functionName = "AccountCircle") {}
-                    Drawer_Function(imageVector = Icons.Filled.Info, functionName = "Info") {}
+                    Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "Account") { pageState.value = MainPages.ACCOUNT_PAGE }
+                    // Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Friend") {}
+                    // Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "Favorite") {}
+                    // Drawer_Function(imageVector = Icons.Filled.AccountCircle, functionName = "AccountCircle") {}
+                    // Drawer_Function(imageVector = Icons.Filled.Info, functionName = "Info") {}
                 }
                 Row(modifier = Modifier
                     .clickable(
@@ -220,7 +220,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun autoLogin() {
-        val sharedPreferences = getSharedPreferences("loginState", MODE_PRIVATE).apply {
+        getSharedPreferences("loginState", MODE_PRIVATE).apply {
             if (getBoolean("state", false)) {
                 val account = getString("account", "")?:""
                 val password = getString("password", "")?:""
