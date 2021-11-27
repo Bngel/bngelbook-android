@@ -8,5 +8,6 @@ package cn.bngel.bngelbook.data
  */
 
 enum class MainPages {
-    HOME_PAGE
+    HOME_PAGE,
+    ACCOUNT_PAGE
 }

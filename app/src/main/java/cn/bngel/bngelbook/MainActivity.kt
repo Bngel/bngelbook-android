@@ -1,7 +1,9 @@
 package cn.bngel.bngelbook
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,18 +28,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.page.PageHome
+import cn.bngel.bngelbook.ui.page.PageAccount
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlin.concurrent.thread
 
 
 class MainActivity : ComponentActivity() {
 
-    private val loginState = mutableStateOf(false)
+    private val loginState = mutableStateOf(GlobalVariables.USER != null)
     private val pageState = mutableStateOf(MainPages.HOME_PAGE)
+    private lateinit var scaffoldState: ScaffoldState
+    private lateinit var scope: CoroutineScope
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         val data = res.data
@@ -61,6 +72,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        autoLogin()
         setContent {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
@@ -72,7 +84,8 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainPage() {
-        val scaffoldState = rememberScaffoldState()
+        scaffoldState = rememberScaffoldState()
+        scope = rememberCoroutineScope()
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {
@@ -94,6 +107,7 @@ class MainActivity : ComponentActivity() {
         ) {
             when (pageState.value) {
                 MainPages.HOME_PAGE -> PageHome.HomePage()
+                MainPages.ACCOUNT_PAGE -> PageAccount.AccountPage()
             }
         }
     }
@@ -104,17 +118,11 @@ class MainActivity : ComponentActivity() {
             Column {
                 Drawer_ProfileCard(profile = "", username = "bngel", daysCount = 3000)
                 Column(modifier = Modifier.weight(1f)) {
-                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") {}
-                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Face") {}
+                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") { pageState.value = MainPages.HOME_PAGE }
+                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Account") { pageState.value = MainPages.ACCOUNT_PAGE }
                     Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "Favorite") {}
-                    Drawer_Function(
-                        imageVector = Icons.Filled.AccountBox,
-                        functionName = "AccountBox"
-                    ) {}
-                    Drawer_Function(
-                        imageVector = Icons.Filled.AccountCircle,
-                        functionName = "AccountCircle"
-                    ) {}
+                    Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "AccountBox") {}
+                    Drawer_Function(imageVector = Icons.Filled.AccountCircle, functionName = "AccountCircle") {}
                     Drawer_Function(imageVector = Icons.Filled.Info, functionName = "Info") {}
                 }
                 Row(modifier = Modifier
@@ -193,6 +201,9 @@ class MainActivity : ComponentActivity() {
                     indication = null
                 ) {
                     onClick()
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
                 }
                 .padding(15.dp)) {
             Icon(imageVector = imageVector,
@@ -206,6 +217,31 @@ class MainActivity : ComponentActivity() {
                     .width(20.dp)
                     .height(20.dp))
         }
+    }
+
+    private fun autoLogin() {
+        val sharedPreferences = getSharedPreferences("loginState", MODE_PRIVATE).apply {
+            if (getBoolean("state", false)) {
+                val account = getString("account", "")?:""
+                val password = getString("password", "")?:""
+                UserApi.postUserLogin(account, password) { result ->
+                    if (result != null) {
+                        when (result.code) {
+                            200 -> {
+                                GlobalVariables.USER = result.data
+                                loginState.value = true
+                            }
+                            else -> {
+                                edit{
+                                    putBoolean("state", false)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }

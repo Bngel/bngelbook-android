@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.edit
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import com.google.accompanist.glide.rememberGlidePainter
@@ -109,6 +110,11 @@ class LoginActivity : ComponentActivity() {
                                             intent.putExtra("loginState", true)
                                             intent.putExtra("userInfo", result.data)
                                             this@LoginActivity.setResult(RESULT_OK, intent)
+                                            getSharedPreferences("loginState", MODE_PRIVATE).edit {
+                                                putBoolean("state", true)
+                                                putString("account", account)
+                                                putString("password", password)
+                                            }
                                             Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
                                             finish()
                                         }

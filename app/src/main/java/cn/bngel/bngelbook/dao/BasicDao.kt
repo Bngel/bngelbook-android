@@ -6,7 +6,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
 /**
  * @author: bngel
  * @date: 21.11.10
@@ -17,7 +16,7 @@ interface BasicDao {
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.1.103"
+        private const val BASE_URL = "http://192.168.43.29"
         const val USER_URL = "$BASE_URL:9001/consumer/user/"
         const val BOOK_URL = "$BASE_URL:9002/consumer/book/"
         const val ACCOUNT_URL = "$BASE_URL:9003/consumer/account/"
