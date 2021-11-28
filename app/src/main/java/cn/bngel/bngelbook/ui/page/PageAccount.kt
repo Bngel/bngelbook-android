@@ -1,58 +1,52 @@
 package cn.bngel.bngelbook.ui.page
 
-import android.content.Intent
-import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cn.bngel.bngelbook.MainActivity
 import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.accountDao.Account
 import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
-object PageAccount {
+object PageAccount: BasePage() {
 
     private val loading = mutableStateOf(false)
-    private val accounts = mutableListOf<Account>()
-    val accountsUpdateState = mutableStateOf(true)
+    private val accounts = mutableStateListOf<Account>()
+
     private val balance = mutableStateOf(0.00)
+
+    init {
+        setPage(MainPages.ACCOUNT_PAGE)
+    }
 
     @Composable
     fun AccountPage() {
         Column {
-            Account_Title()
-            Account_Overview()
-            Account_Card()
+            AccountTitle()
+            AccountOverview()
+            AccountCard()
         }
         if (loading.value)
             UiWidget.Dialog_Loading()
     }
 
     @Composable
-    fun Account_Title() {
+    fun AccountTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -64,7 +58,7 @@ object PageAccount {
     }
 
     @Composable
-    fun Account_Overview() {
+    fun AccountOverview() {
         Column {
             Text(text = "净资产", fontSize = 18.sp, textAlign = TextAlign.Start ,
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
@@ -74,8 +68,8 @@ object PageAccount {
     }
 
     @Composable
-    fun Account_Card() {
-        if (accountsUpdateState.value) {
+    fun AccountCard() {
+        if (getUpdate()) {
             loading.value = true
             AccountApi.getAccountsByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
                 if (result?.data != null) {
@@ -87,7 +81,7 @@ object PageAccount {
                     }
                 }
                 loading.value = false
-                accountsUpdateState.value = false
+                setUpdate(false)
             }
         }
         if (accounts.size > 0) {

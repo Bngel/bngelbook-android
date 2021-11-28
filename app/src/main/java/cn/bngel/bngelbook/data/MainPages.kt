@@ -9,5 +9,6 @@ package cn.bngel.bngelbook.data
 
 enum class MainPages {
     HOME_PAGE,
-    ACCOUNT_PAGE
+    ACCOUNT_PAGE,
+    FRIEND_PAGE
 }

@@ -37,4 +37,8 @@ object UserApi: BaseApi() {
         userService.getUserRegisterDays(id).enqueue(basicCallback(event))
     }
 
+    fun getFriendsById(id: Long, event: ((CommonResult<List<User>>?) -> Unit)? = null) {
+        userService.getFriendsById(id).enqueue(basicCallback(event))
+    }
+
 }

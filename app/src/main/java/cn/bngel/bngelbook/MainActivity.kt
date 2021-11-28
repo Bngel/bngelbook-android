@@ -36,6 +36,8 @@ import cn.bngel.bngelbook.data.userDao.User
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.page.PageHome
 import cn.bngel.bngelbook.ui.page.PageAccount
+import cn.bngel.bngelbook.ui.page.PageFriend
+import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -47,7 +49,7 @@ import kotlin.concurrent.thread
 class MainActivity : ComponentActivity() {
 
     private val loginState = mutableStateOf(GlobalVariables.USER != null)
-    private val pageState = mutableStateOf(MainPages.HOME_PAGE)
+    private val pageState = mutableStateOf(PageManager.getCurPage())
     private val userDays = mutableStateOf(0)
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
@@ -55,23 +57,16 @@ class MainActivity : ComponentActivity() {
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
         val data = res.data
         if (data != null) {
-            loginState.value = data.getBooleanExtra("loginState", false)
-            if (loginState.value) {
-                val user = data.getSerializableExtra("userInfo") as User
-                GlobalVariables.USER = user
-            }
-            val updateState = data.getBooleanExtra("updateState", false)
-            if (updateState) {
-                when (pageState.value) {
-                    MainPages.HOME_PAGE -> {
-                        if (!PageHome.billUpdateState.value)
-                            PageHome.billUpdateState.value = true
-                    }
-                    MainPages.ACCOUNT_PAGE -> {
-                        if (!PageAccount.accountsUpdateState.value)
-                            PageAccount.accountsUpdateState.value = true
-                    }
+            if (res.resultCode == RESULT_FIRST_USER) {
+                loginState.value = data.getBooleanExtra("loginState", false)
+                if (loginState.value) {
+                    val user = data.getSerializableExtra("userInfo") as User
+                    GlobalVariables.USER = user
                 }
+            }
+            val updateRequired = data.getBooleanExtra("updateState", false)
+            if (updateRequired) {
+                PageManager.updateAllPage()
             }
         }
     }
@@ -79,6 +74,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData()
+        PageManager.registerPageManager(this)
         setContent {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
@@ -98,15 +94,17 @@ class MainActivity : ComponentActivity() {
                 Drawer()
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    backgroundColor = Color(0xFF66CCFF),
-                    contentColor = Color(0xFFFFFFFF),
-                    onClick = {
-                        val intent = Intent(this@MainActivity, BillSaveActivity::class.java)
-                        launcher.launch(intent)
+                if (pageState.value == MainPages.HOME_PAGE) {
+                    FloatingActionButton(
+                        backgroundColor = Color(0xFF66CCFF),
+                        contentColor = Color(0xFFFFFFFF),
+                        onClick = {
+                            val intent = Intent(this@MainActivity, BillSaveActivity::class.java)
+                            launcher.launch(intent)
+                        }
+                    ) {
+                        Icon(Icons.Filled.Add, "add a new bill")
                     }
-                ){
-                    Icon(Icons.Filled.Add, "add a new bill")
                 }
             },
             floatingActionButtonPosition = FabPosition.End
@@ -114,6 +112,7 @@ class MainActivity : ComponentActivity() {
             when (pageState.value) {
                 MainPages.HOME_PAGE -> PageHome.HomePage()
                 MainPages.ACCOUNT_PAGE -> PageAccount.AccountPage()
+                MainPages.FRIEND_PAGE -> PageFriend.FriendPage()
             }
         }
     }
@@ -122,11 +121,17 @@ class MainActivity : ComponentActivity() {
     fun Drawer() {
         if (loginState.value) {
             Column {
-                Drawer_ProfileCard(profile = "", username = "bngel", daysCount = userDays.value)
+                Drawer_ProfileCard(profile = "", username = GlobalVariables.USER?.username?:"", daysCount = userDays.value)
                 Column(modifier = Modifier.weight(1f)) {
-                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") { pageState.value = MainPages.HOME_PAGE }
-                    Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "Account") { pageState.value = MainPages.ACCOUNT_PAGE }
-                    // Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Friend") {}
+                    Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") {
+                        setPage(MainPages.HOME_PAGE)
+                    }
+                    Drawer_Function(imageVector = Icons.Filled.AccountBox, functionName = "Account") {
+                        setPage(MainPages.ACCOUNT_PAGE)
+                    }
+                    Drawer_Function(imageVector = Icons.Filled.Face, functionName = "Friend") {
+                        setPage(MainPages.FRIEND_PAGE)
+                    }
                     // Drawer_Function(imageVector = Icons.Filled.Favorite, functionName = "Favorite") {}
                     // Drawer_Function(imageVector = Icons.Filled.AccountCircle, functionName = "AccountCircle") {}
                     // Drawer_Function(imageVector = Icons.Filled.Info, functionName = "Info") {}
@@ -261,6 +266,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    }
+
+    private fun setPage(page: MainPages) {
+        PageManager.setCurPage(page)
+        pageState.value = PageManager.getCurPage()
     }
 
 }

@@ -39,7 +39,7 @@ class BillSaveActivity : ComponentActivity() {
     private val curAccount = mutableStateOf<Long?>(null)
     private val curAccountName = mutableStateOf("不选账户")
     private val accountSelected = mutableStateOf(false)
-    private val accountList = mutableListOf<Account>()
+    private val accountList = mutableStateListOf<Account>()
     private val loading = mutableStateOf(false)
     private var curPoint = -1
 
@@ -215,7 +215,7 @@ class BillSaveActivity : ComponentActivity() {
             Row(modifier = Modifier
                 .weight(1F)
                 .padding(start = 10.dp, end = 10.dp)) {
-                Text(text = account, fontSize = 15.sp, modifier = Modifier.clickable {
+                Text(text = if (account == "") "不选账户" else account, fontSize = 15.sp, modifier = Modifier.clickable {
                     loading.value = true
                     accountSelected.value = true
                 })
@@ -271,10 +271,10 @@ class BillSaveActivity : ComponentActivity() {
 
     @Composable
     fun AccountsDialog() {
-        var selectedAccount = remember {
+        val selectedAccount = remember {
             mutableStateOf("")
         }
-        var selectedAccountId = remember {
+        val selectedAccountId = remember {
             mutableStateOf(curAccount.value)
         }
         getUserAccounts()
@@ -283,7 +283,7 @@ class BillSaveActivity : ComponentActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
-                    .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 20.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(0.8F)
                     .fillMaxHeight(0.6F)
             ) {
@@ -295,7 +295,7 @@ class BillSaveActivity : ComponentActivity() {
                     if (accountList.size != 0) {
                         items(accountList) { account ->
                             if (account.name != null && account.id != null) {
-                                Row {
+                                Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.padding(top = 10.dp)) {
                                     RadioButton(selected = account.name == selectedAccount.value,
                                         onClick = {
                                             selectedAccount.value = account.name
@@ -330,8 +330,10 @@ class BillSaveActivity : ComponentActivity() {
             val userId = user.id
             AccountApi.getAccountsByUserId(userId) { result ->
                 loading.value = false
-                if (result?.data != null)
+                if (result?.data != null) {
+                    accountList.clear()
                     accountList.addAll(result.data)
+                }
             }
         }
         else {

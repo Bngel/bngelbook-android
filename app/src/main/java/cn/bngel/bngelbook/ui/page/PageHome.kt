@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,18 +25,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.billDao.Bill
 import cn.bngel.bngelbook.data.bookDao.Book
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.network.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 
-object PageHome {
+object PageHome: BasePage() {
 
-    val billUpdateState = mutableStateOf(true)
     private val loadingBills = mutableStateOf(false)
-    private val billList = mutableListOf<Bill>()
-    private val bookList = mutableListOf<Book>()
+    private val billList = mutableStateListOf<Bill>()
+    private val bookList = mutableStateListOf<Book>()
     private val curBalance = mutableStateOf(0.0)
     private val curCost = mutableStateOf(0.0)
     private val curIncome = mutableStateOf(0.0)
@@ -45,21 +46,25 @@ object PageHome {
     private val curBookName = mutableStateOf("")
     private val bookSelected = mutableStateOf(false)
 
+    init {
+        setPage(MainPages.HOME_PAGE)
+    }
+
     @Composable
     fun HomePage() {
         Column {
-            Home_Overview()
-            if (billUpdateState.value)
+            HomeOverview()
+            if (getUpdate())
                 updateBills()
             if (loadingBills.value) {
                 Dialog_Loading()
             }
-            Home_BillList(billList)
+            HomeBillList(billList)
         }
     }
 
     @Composable
-    fun Home_Overview() {
+    fun HomeOverview() {
         getCurBook()
         Column(horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -113,16 +118,16 @@ object PageHome {
     }
 
     @Composable
-    fun Home_BillList(bills: List<Bill>) {
+    fun HomeBillList(bills: List<Bill>) {
         LazyColumn {
             items(bills) { bill ->
-                Home_Bill(bill)
+                HomeBill(bill)
             }
         }
     }
 
     @Composable
-    fun Home_Bill(bill: Bill) {
+    fun HomeBill(bill: Bill) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp)) {
@@ -148,7 +153,7 @@ object PageHome {
         BillApi.getBillsByBookId(curBookId.value) { bills ->
             if (bills != null) {
                 if (bills.code == 200)
-                    billUpdateState.value = false
+                    setUpdate(false)
                 if (bills.data != null) {
                     billList.clear()
                     val data = bills.data
@@ -188,12 +193,12 @@ object PageHome {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
-                    .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 20.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(0.8F)
                     .fillMaxHeight(0.6F)
             ) {
                 LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier.weight(1F)
                         .padding(10.dp)
                 ) {
@@ -227,7 +232,7 @@ object PageHome {
                     .clickable {
                         bookSelected.value = false
                         if (selectedBook.value != curBookName.value && selectedBook.value != "")
-                            billUpdateState.value = true
+                            setUpdate(true)
                         curBookName.value = selectedBook.value
                         curBookId.value = selectedBookId.value
                     }

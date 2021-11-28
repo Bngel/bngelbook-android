@@ -109,6 +109,7 @@ class LoginActivity : ComponentActivity() {
                                         200 -> {
                                             intent.putExtra("loginState", true)
                                             intent.putExtra("userInfo", result.data)
+                                            setResult(RESULT_FIRST_USER, intent)
                                             this@LoginActivity.setResult(RESULT_OK, intent)
                                             getSharedPreferences("loginState", MODE_PRIVATE).edit {
                                                 putBoolean("state", true)
