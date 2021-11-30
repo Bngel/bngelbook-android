@@ -89,6 +89,9 @@ object PageHome: BasePage() {
                     )
                 }
             }
+            else {
+                Spacer(modifier = Modifier.height(15.dp))
+            }
             Row{
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)) {
@@ -152,8 +155,6 @@ object PageHome: BasePage() {
         loadingBills.value = true
         BillApi.getBillsByBookId(curBookId.value) { bills ->
             if (bills != null) {
-                if (bills.code == 200)
-                    setUpdate(false)
                 if (bills.data != null) {
                     billList.clear()
                     val data = bills.data
@@ -173,9 +174,10 @@ object PageHome: BasePage() {
                     curCost.value = totalCost
                     curBalance.value = totalIncome - totalCost
                     billList.addAll(data)
+                    setUpdate(false)
                 }
+                loadingBills.value = false
             }
-            loadingBills.value = false
         }
     }
 
@@ -199,7 +201,8 @@ object PageHome: BasePage() {
             ) {
                 LazyColumn(
                     horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.weight(1F)
+                    modifier = Modifier
+                        .weight(1F)
                         .padding(10.dp)
                 ) {
                     if (bookList.size != 0) {

@@ -16,7 +16,7 @@ interface BasicDao {
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.1.105"
+        private const val BASE_URL = "http://192.168.1.102"
         const val USER_URL = "$BASE_URL:9001/consumer/user/"
         const val BOOK_URL = "$BASE_URL:9002/consumer/book/"
         const val ACCOUNT_URL = "$BASE_URL:9003/consumer/account/"
@@ -31,9 +31,9 @@ interface BasicDao {
                 .create()
 
             val mHttpClient = OkHttpClient().newBuilder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
                 .build()
 
             val retrofit: Retrofit = Retrofit.Builder()

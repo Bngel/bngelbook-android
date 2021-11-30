@@ -94,17 +94,22 @@ class MainActivity : ComponentActivity() {
                 Drawer()
             },
             floatingActionButton = {
-                if (pageState.value == MainPages.HOME_PAGE) {
-                    FloatingActionButton(
-                        backgroundColor = Color(0xFF66CCFF),
-                        contentColor = Color(0xFFFFFFFF),
-                        onClick = {
-                            val intent = Intent(this@MainActivity, BillSaveActivity::class.java)
-                            launcher.launch(intent)
-                        }
-                    ) {
-                        Icon(Icons.Filled.Add, "add a new bill")
+                FloatingActionButton(
+                    backgroundColor = Color(0xFF66CCFF),
+                    contentColor = Color(0xFFFFFFFF),
+                    onClick = {
+                        val intent = Intent(
+                            this@MainActivity, when (PageManager.getCurPage()) {
+                                MainPages.HOME_PAGE -> BillSaveActivity::class.java
+                                MainPages.ACCOUNT_PAGE -> AccountSaveActivity::class.java
+                                MainPages.FRIEND_PAGE -> FriendAddActivity::class.java
+                                else -> BillSaveActivity::class.java
+                            }
+                        )
+                        launcher.launch(intent)
                     }
+                ) {
+                    Icon(Icons.Filled.Add, null)
                 }
             },
             floatingActionButtonPosition = FabPosition.End

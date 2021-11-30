@@ -1,5 +1,6 @@
 package cn.bngel.bngelbook.network
 
+import android.util.Log
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.userDao.User
 import retrofit2.Call
@@ -18,9 +19,10 @@ abstract class BaseApi {
         }
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            t.printStackTrace()
-            if (event != null)
+            Log.d("bngelbook_error", t.cause.toString())
+            if (event != null) {
                 event(null)
+            }
         }
     }
 

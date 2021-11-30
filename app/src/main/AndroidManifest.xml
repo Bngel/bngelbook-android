@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Bngelbook"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".FriendAddActivity"
+            android:exported="true" />
+        <activity
+            android:name=".AccountSaveActivity"
+            android:exported="true" />
+        <activity
             android:name=".BillSaveActivity"
             android:exported="true" />
         <activity

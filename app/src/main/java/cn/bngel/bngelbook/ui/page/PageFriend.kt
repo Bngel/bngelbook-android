@@ -85,8 +85,8 @@ object PageFriend: BasePage() {
                 if (result?.data != null) {
                     friends.clear()
                     friends.addAll(result.data)
+                    setUpdate(false)
                 }
-                setUpdate(false)
                 loading.value = false
             }
         }

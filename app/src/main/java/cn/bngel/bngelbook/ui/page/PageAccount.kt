@@ -79,13 +79,13 @@ object PageAccount: BasePage() {
                     accounts.forEach { account ->
                         balance.value += account.balance ?: 0.00
                     }
+                    setUpdate(false)
                 }
                 loading.value = false
-                setUpdate(false)
             }
         }
         if (accounts.size > 0) {
-            Card(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+            Card(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)){
                 LazyColumn(modifier = Modifier.padding(10.dp)) {
                     items(accounts) { account ->
                         Row(verticalAlignment = Alignment.CenterVertically,
