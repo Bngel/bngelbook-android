@@ -1,13 +1,9 @@
-package cn.bngel.bngelbook
+package cn.bngel.bngelbook.activity
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.userDao.User
@@ -40,13 +37,10 @@ import cn.bngel.bngelbook.ui.page.PageFriend
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
 
     private val loginState = mutableStateOf(GlobalVariables.USER != null)
     private val pageState = mutableStateOf(PageManager.getCurPage())
@@ -54,10 +48,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
-        val data = res.data
+
+    override fun event(result: ActivityResult) {
+        val data = result.data
         if (data != null) {
-            if (res.resultCode == RESULT_FIRST_USER) {
+            if (result.resultCode == RESULT_FIRST_USER) {
                 loginState.value = data.getBooleanExtra("loginState", false)
                 if (loginState.value) {
                     val user = data.getSerializableExtra("userInfo") as User

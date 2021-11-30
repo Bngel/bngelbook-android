@@ -24,7 +24,7 @@ interface BillDao: BasicDao {
      * Bill - 删除账单
      */
     @DELETE(".")
-    fun deleteBillById(@Field("id") id: Long): Call<CommonResult<Boolean>>
+    fun deleteBillById(@Query("id") id: Long): Call<CommonResult<Boolean>>
 
     /**
      * Bill - 修改账单信息

@@ -1,11 +1,10 @@
-package cn.bngel.bngelbook
+package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,15 +18,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.edit
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
-import com.google.accompanist.glide.rememberGlidePainter
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 
-class LoginActivity : ComponentActivity() {
+class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

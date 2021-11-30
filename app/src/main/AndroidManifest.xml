@@ -13,19 +13,22 @@
         android:theme="@style/Theme.Bngelbook"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".FriendAddActivity"
+            android:name=".activity.BillDetailActivity"
             android:exported="true" />
         <activity
-            android:name=".AccountSaveActivity"
+            android:name=".activity.FriendAddActivity"
             android:exported="true" />
         <activity
-            android:name=".BillSaveActivity"
+            android:name=".activity.AccountSaveActivity"
             android:exported="true" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.BillSaveActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Bngelbook.NoActionBar">

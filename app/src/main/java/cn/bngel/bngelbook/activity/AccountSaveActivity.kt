@@ -1,18 +1,14 @@
-package cn.bngel.bngelbook
+package cn.bngel.bngelbook.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -25,9 +21,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.accountDao.Account
 import cn.bngel.bngelbook.network.AccountApi
@@ -35,7 +31,7 @@ import cn.bngel.bngelbook.ui.page.PageAccount
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
-class AccountSaveActivity : ComponentActivity() {
+class AccountSaveActivity : BaseActivity() {
 
     private val loading = mutableStateOf(false)
     private val accountUpdateState = mutableStateOf(true)

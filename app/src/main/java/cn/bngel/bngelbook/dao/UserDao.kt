@@ -47,7 +47,7 @@ interface UserDao: BasicDao {
      * User - 注销用户
      */
     @DELETE(".")
-    fun deleteUserById(@Field("id") id: Long): Call<CommonResult<Boolean>>
+    fun deleteUserById(@Query("id") id: Long): Call<CommonResult<Boolean>>
 
     /**
      * User - 修改用户信息

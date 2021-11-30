@@ -1,5 +1,6 @@
 package cn.bngel.bngelbook.ui.page
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import cn.bngel.bngelbook.R
+import cn.bngel.bngelbook.activity.ActivityManager
+import cn.bngel.bngelbook.activity.BillDetailActivity
+import cn.bngel.bngelbook.activity.LoginActivity
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.billDao.Bill
@@ -133,7 +137,13 @@ object PageHome: BasePage() {
     fun HomeBill(bill: Bill) {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp)) {
+            .padding(top = 5.dp)
+            .clickable {
+                val intent =
+                    Intent(ActivityManager.getCurActivity(), BillDetailActivity::class.java)
+                intent.putExtra("bill", bill)
+                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+            }) {
             Image(painter = painterResource(id = R.drawable.default_profile),
                 contentDescription = "bill type",
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))

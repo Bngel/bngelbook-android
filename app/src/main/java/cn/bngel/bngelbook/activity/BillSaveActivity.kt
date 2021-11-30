@@ -1,8 +1,7 @@
-package cn.bngel.bngelbook
+package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
+import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.accountDao.Account
 import cn.bngel.bngelbook.data.billDao.Bill
@@ -30,7 +30,7 @@ import cn.bngel.bngelbook.ui.BillType
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
-class BillSaveActivity : ComponentActivity() {
+class BillSaveActivity : BaseActivity() {
 
     private val curType = mutableStateOf("吃喝")
     private val curTags = mutableStateOf("")
