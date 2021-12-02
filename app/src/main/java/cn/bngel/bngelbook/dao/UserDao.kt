@@ -66,4 +66,10 @@ interface UserDao: BasicDao {
      */
     @GET("friends")
     fun getFriendsById(@Query("id") id: Long): Call<CommonResult<List<User>>>
+
+    /**
+     * User - 查询用户列表 By 用户名
+     */
+    @GET("{username}")
+    fun getUsersByUsername(@Path("username") username: String): Call<CommonResult<List<User>>>
 }

@@ -41,4 +41,8 @@ object UserApi: BaseApi() {
         userService.getFriendsById(id).enqueue(basicCallback(event))
     }
 
+    fun getUsersByUsername(username: String, event: ((CommonResult<List<User>>?) -> Unit)? = null){
+        userService.getUsersByUsername(username).enqueue(basicCallback(event))
+    }
+
 }

@@ -16,7 +16,7 @@ interface BasicDao {
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.1.102"
+        private const val BASE_URL = "http://172.24.146.58"
         const val USER_URL = "$BASE_URL:9001/consumer/user/"
         const val BOOK_URL = "$BASE_URL:9002/consumer/book/"
         const val ACCOUNT_URL = "$BASE_URL:9003/consumer/account/"
@@ -26,7 +26,7 @@ interface BasicDao {
         inline fun <reified T: BasicDao> create(url: String): T {
             val baseUrl = url
             val gson = GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
+                .setDateFormat("yyyy-MM-dd hh:mm:ss")
                 .setLenient()
                 .create()
 

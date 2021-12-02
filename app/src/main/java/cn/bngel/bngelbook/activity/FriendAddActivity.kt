@@ -2,26 +2,44 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
+import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.friendDao.Friend
+import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.network.FriendApi
+import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 
 class FriendAddActivity : BaseActivity() {
+
+    private val usernameState = mutableStateOf("")
+    private val userListState = mutableStateListOf<User>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -36,6 +54,15 @@ class FriendAddActivity : BaseActivity() {
 
     @Composable
     fun FriendAddPage() {
+        Column {
+            FriendAddTitle()
+            FriendAddSearch()
+            FriendAddSearchList()
+        }
+    }
+
+    @Composable
+    fun FriendAddTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -61,6 +88,58 @@ class FriendAddActivity : BaseActivity() {
                 .fillMaxWidth()
                 .padding(20.dp), horizontalArrangement = Arrangement.Center) {
                 Text(text = "添加好友", fontSize = 18.sp)
+            }
+        }
+    }
+
+    @Composable
+    fun FriendAddSearch() {
+        TextField(value = usernameState.value, onValueChange = {
+            usernameState.value = it
+        }, modifier = Modifier.fillMaxWidth(), leadingIcon = { Icon(Icons.Filled.Search, null)},
+            singleLine = true)
+    }
+
+    @Composable
+    fun FriendAddSearchList() {
+        searchFriendsByUsername()
+        LazyColumn {
+            items(userListState) { user ->
+                FriendAddSearchItem(user = user)
+            }
+        }
+    }
+    
+    @Composable
+    fun FriendAddSearchItem(user: User) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
+                modifier = Modifier.padding(20.dp))
+            Text(text = user.username ?: "", fontSize = 20.sp, color = Color.Black, modifier = Modifier.weight(1F))
+            Icon(imageVector = Icons.Filled.AddCircle, null,
+                modifier = Modifier.padding(20.dp).clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    val friend = Friend(null, GlobalVariables.USER?.id, user.id)
+                    FriendApi.postFriend(friend) { result ->
+                        Toast.makeText(this@FriendAddActivity, when(result?.code) {
+                            200 -> "好友请求发送成功"
+                            484 -> "你们已经是好友啦"
+                            423 -> "不能添加自己为好友"
+                            else -> "unknown error"
+                        },Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
+    }
+
+    private fun searchFriendsByUsername() {
+        UserApi.getUsersByUsername(usernameState.value) { result ->
+            val data = result?.data
+            if (data != null) {
+                userListState.clear()
+                userListState.addAll(data)
             }
         }
     }

@@ -5,14 +5,17 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -20,12 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
@@ -34,6 +39,7 @@ class BillDetailActivity : BaseActivity() {
 
     private val bill =  mutableStateOf<Bill?>(null)
     private val deleteState = mutableStateOf(false)
+    private val accountName = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +62,8 @@ class BillDetailActivity : BaseActivity() {
         Column {
             BillDetailTitle()
             BillDetailBill()
+            Divider(modifier = Modifier.padding(10.dp))
+            BillDetailCard()
         }
     }
 
@@ -90,7 +98,7 @@ class BillDetailActivity : BaseActivity() {
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
-                            ){
+                            ) {
                                 deleteState.value = true
                             }
                     )
@@ -131,18 +139,60 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
+    fun BillDetailCard() {
+        val accountId = bill.value?.accountId
+        if (accountId != null) {
+            AccountApi.getAccountById(accountId) { result ->
+                val account = result?.data
+                if (account?.name != null) {
+                    accountName.value = account.name
+                }
+            }
+        }
+        Card(shape = RoundedCornerShape(10.dp), modifier = Modifier.padding(10.dp),
+            border = BorderStroke(1.dp, Color.Gray)) {
+            Column(modifier = Modifier.padding(10.dp)) {
+                BillDetailCardRow(imageVector = Icons.Filled.AccountBox, key = "账户", value = accountName.value)
+                BillDetailCardRow(imageVector = Icons.Filled.DateRange, key = "日期", value = bill.value?.createTime?.toString()?:"")
+                BillDetailCardRow(imageVector = Icons.Filled.Info, key = "备注", value = bill.value?.tags?:"")
+            }
+        }
+    }
+
+    @Composable
+    fun BillDetailCardRow(imageVector: ImageVector, key: String, value: String) {
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.weight(2F), horizontalArrangement = Arrangement.Start
+                , verticalAlignment = Alignment.CenterVertically) {
+                Icon(imageVector = imageVector, null, modifier = Modifier.padding(5.dp))
+                Text(text = key, fontSize = 14.sp)
+            }
+            Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End
+                , verticalAlignment = Alignment.CenterVertically) {
+                Text(text = value, fontSize = 14.sp)
+            }
+        }
+    }
+
+    @Composable
     fun DeleteDialog() {
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {
-                Text( text = "确认" , fontSize = 15.sp, modifier = Modifier.clickable {
-                    deleteBill()
-                    deleteState.value = false
-                }.padding(10.dp))},
+                Text( text = "确认" , fontSize = 15.sp, modifier = Modifier
+                    .clickable {
+                        deleteBill()
+                        deleteState.value = false
+                    }
+                    .padding(10.dp))},
             dismissButton = {
-                Text( text = "取消" , fontSize = 15.sp, modifier = Modifier.clickable {
-                    deleteState.value = false
-                }.padding(10.dp))},
+                Text( text = "取消" , fontSize = 15.sp, modifier = Modifier
+                    .clickable {
+                        deleteState.value = false
+                    }
+                    .padding(10.dp))},
             title = { Text( text = "提示:" , fontSize = 15.sp)},
             text = { Text( text = "是否确定删除账单?", fontSize = 18.sp)}
         )
