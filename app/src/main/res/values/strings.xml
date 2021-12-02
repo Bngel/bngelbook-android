@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">bngelbook</string>
     <string name="title_activity_bill_detail">BillDetailActivity</string>
+    <string name="title_activity_user_detail">UserDetailActivity</string>
 </resources>

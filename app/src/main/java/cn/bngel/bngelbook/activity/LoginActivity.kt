@@ -38,7 +38,7 @@ class LoginActivity : BaseActivity() {
 
     @Composable
     fun LoginPage() {
-        var loading = remember {
+        val loading = remember {
             mutableStateOf(false)
         }
         if (loading.value)

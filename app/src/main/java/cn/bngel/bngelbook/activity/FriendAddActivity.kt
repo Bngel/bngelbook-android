@@ -15,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -68,7 +69,7 @@ class FriendAddActivity : BaseActivity() {
             .shadow(1.dp)) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
-                    Image(painter = painterResource(id = R.drawable.close), contentDescription = "close_btn",
+                    Image(imageVector = Icons.Filled.Close, contentDescription = "close_btn",
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
                             .width(30.dp)
@@ -112,7 +113,11 @@ class FriendAddActivity : BaseActivity() {
     
     @Composable
     fun FriendAddSearchItem(user: User) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.fillMaxWidth().clickable {
+            val intent = Intent(this@FriendAddActivity, UserDetailActivity::class.java)
+            intent.putExtra("user", user)
+            launcher.launch(intent)
+        }, verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
                 modifier = Modifier.padding(20.dp))
             Text(text = user.username ?: "", fontSize = 20.sp, color = Color.Black, modifier = Modifier.weight(1F))

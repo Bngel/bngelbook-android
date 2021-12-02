@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -72,8 +70,7 @@ class BillDetailActivity : BaseActivity() {
         Box(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
-                    Image(painter = painterResource(id = R.drawable.close),
-                        contentDescription = "close_btn",
+                    Image(imageVector = Icons.Filled.Close, contentDescription = "close_btn",
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
                             .width(30.dp)
@@ -89,7 +86,7 @@ class BillDetailActivity : BaseActivity() {
                             })
                 }
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
-                    Image(painter = painterResource(id = R.drawable.delete),
+                    Image(imageVector = Icons.Filled.Delete,
                         contentDescription = "delete_btn",
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)

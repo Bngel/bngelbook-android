@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,7 +77,7 @@ class BillSaveActivity : BaseActivity() {
         Box(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
-                    Image(painter = painterResource(id = R.drawable.close), contentDescription = "close_btn",
+                    Image(imageVector = Icons.Filled.Close, contentDescription = "close_btn",
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                             .width(30.dp)
@@ -89,7 +92,7 @@ class BillSaveActivity : BaseActivity() {
                             })
                 }
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
-                    Image(painter = painterResource(id = R.drawable.ok), contentDescription = "ok_btn",
+                    Image(imageVector = Icons.Filled.Check, contentDescription = "ok_btn",
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)
                             .width(30.dp)

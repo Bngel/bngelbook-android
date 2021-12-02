@@ -13,6 +13,11 @@
         android:theme="@style/Theme.Bngelbook"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.UserDetailActivity"
+            android:exported="true"
+            android:label="@string/title_activity_user_detail"
+            android:theme="@style/Theme.Bngelbook.NoActionBar" />
+        <activity
             android:name=".activity.BillDetailActivity"
             android:exported="true" />
         <activity

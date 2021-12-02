@@ -176,7 +176,10 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         if (loginState.value) {
-                            TODO("open account page")
+                            val intent = Intent(ActivityManager.getCurActivity(), UserDetailActivity::class.java)
+                            intent.putExtra("user", GlobalVariables.USER)
+                            intent.putExtra("menu", true)
+                            launcher.launch(intent)
                         } else {
                             scope.launch { scaffoldState.drawerState.close() }
                             launcher.launch(Intent(this@MainActivity, LoginActivity::class.java))
