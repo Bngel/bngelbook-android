@@ -2,6 +2,7 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,27 +23,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.window.PopupProperties
 import cn.bngel.bngelbook.R
+import cn.bngel.bngelbook.data.friendDao.Friend
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.network.FriendApi
+import cn.bngel.bngelbook.ui.page.PageManager
 
 class UserDetailActivity : BaseActivity() {
 
     private var user: User? = null
-    private var menuClickable = false
+    private var menuType: Int = -1
     private val menuExpanded = mutableStateOf(false)
+    private val menuTypeSelf = 1
+    private val menuTypeFriend = 2
+    private val menuTypeStranger = 3
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         user = intent.getSerializableExtra("user") as User
-        menuClickable = intent.getBooleanExtra("menu", false)
-        val menuType = intent.getIntExtra("menuType", -1)
+        menuType = intent.getIntExtra("menuType", -1)
 
         setContent {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     UserDetailPage()
-                    TODO("create a bottom sheet")
                 }
             }
         }
@@ -82,18 +89,24 @@ class UserDetailActivity : BaseActivity() {
 
                 }
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
-                    Image(imageVector = Icons.Filled.Menu, contentDescription = "close_btn",
-                        modifier = Modifier
-                            .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
-                            .width(30.dp)
-                            .height(30.dp)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-
-                            })
-
+                    Column {
+                        Image(imageVector = Icons.Filled.Menu, contentDescription = "menu_btn",
+                            modifier = Modifier
+                                .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
+                                .width(30.dp)
+                                .height(30.dp)
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    menuExpanded.value = true
+                                })
+                        when (menuType) {
+                            menuTypeSelf -> UserDetailPopupMenuForSelf()
+                            menuTypeFriend -> UserDetailPopupMenuForFriend()
+                            menuTypeStranger -> UserDetailPopupMenuForStranger()
+                        }
+                    }
                 }
             }
             Row(modifier = Modifier
@@ -145,6 +158,74 @@ class UserDetailActivity : BaseActivity() {
                 textAlign = TextAlign.End, modifier = Modifier
                     .weight(1F)
                     .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 20.dp))
+        }
+    }
+
+    @Composable
+    fun UserDetailPopupMenuForSelf() {
+        DropdownMenu(expanded = menuExpanded.value,
+            onDismissRequest = { menuExpanded.value = false },
+            offset = DpOffset(10.dp,10.dp),
+        ) {
+            UserDetailPopupMenuItem(icon = Icons.Filled.Edit, text = "编辑"){
+
+            }
+        }
+    }
+
+    @Composable
+    fun UserDetailPopupMenuForFriend() {
+        DropdownMenu(expanded = menuExpanded.value,
+            onDismissRequest = { menuExpanded.value = false },
+            offset = DpOffset(10.dp,10.dp),
+        ) {
+            UserDetailPopupMenuItem(icon = Icons.Filled.Delete, text = "删除好友"){
+                user?.id?.apply {
+                    FriendApi.deleteFriendByUserId(this) { result ->
+                        if (result?.code == 200) {
+                            Toast.makeText(this@UserDetailActivity, "删除好友成功", Toast.LENGTH_SHORT).show()
+                            PageManager.updateAllPage()
+                            finish()
+                        }
+                        else {
+                            Toast.makeText(this@UserDetailActivity, "删除好友失败", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun UserDetailPopupMenuForStranger() {
+        DropdownMenu(expanded = menuExpanded.value,
+            onDismissRequest = { menuExpanded.value = false },
+            offset = DpOffset(10.dp,10.dp),
+        ) {
+            UserDetailPopupMenuItem(icon = Icons.Filled.Add, text = "加为好友"){
+                user?.id?.apply {
+                    FriendApi.postFriendByUserId(this) { result ->
+                        if (result?.code == 200) {
+                            Toast.makeText(this@UserDetailActivity, "添加好友成功", Toast.LENGTH_SHORT).show()
+                            PageManager.updateAllPage()
+                            finish()
+                        }
+                        else {
+                            Toast.makeText(this@UserDetailActivity, "添加好友失败", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun UserDetailPopupMenuItem(icon: ImageVector, text: String, onClick: () -> Unit) {
+        DropdownMenuItem(onClick = {
+            onClick()
+        }) {
+            Icon(imageVector = icon, contentDescription = null, modifier = Modifier.padding(10.dp))
+            Text(text = text, textAlign = TextAlign.Center)
         }
     }
 }

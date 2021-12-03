@@ -178,7 +178,7 @@ class MainActivity : BaseActivity() {
                         if (loginState.value) {
                             val intent = Intent(ActivityManager.getCurActivity(), UserDetailActivity::class.java)
                             intent.putExtra("user", GlobalVariables.USER)
-                            intent.putExtra("menu", true)
+                            intent.putExtra("menuType", 1)
                             launcher.launch(intent)
                         } else {
                             scope.launch { scaffoldState.drawerState.close() }

@@ -42,9 +42,8 @@ interface FriendDao: BasicDao {
     /**
      * Friend - 删除好友
      */
-    @DELETE(".")
-    @FormUrlEncoded
-    fun deleteFriendByUserId(@Field("userId") userId: Long): Call<CommonResult<Boolean>>
+    @HTTP(method = "DELETE", path = ".", hasBody = true)
+    fun deleteFriendByFriend(@Body friend: Friend): Call<CommonResult<Boolean>>
 
     /**
      * Friend - 查询好友关系

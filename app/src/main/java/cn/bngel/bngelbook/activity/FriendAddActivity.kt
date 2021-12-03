@@ -34,6 +34,7 @@ import cn.bngel.bngelbook.data.friendDao.Friend
 import cn.bngel.bngelbook.data.userDao.User
 import cn.bngel.bngelbook.network.FriendApi
 import cn.bngel.bngelbook.network.UserApi
+import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 
 class FriendAddActivity : BaseActivity() {
@@ -116,6 +117,7 @@ class FriendAddActivity : BaseActivity() {
         Row(modifier = Modifier.fillMaxWidth().clickable {
             val intent = Intent(this@FriendAddActivity, UserDetailActivity::class.java)
             intent.putExtra("user", user)
+            intent.putExtra("menuType", 3)
             launcher.launch(intent)
         }, verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
@@ -134,6 +136,8 @@ class FriendAddActivity : BaseActivity() {
                             423 -> "不能添加自己为好友"
                             else -> "unknown error"
                         },Toast.LENGTH_SHORT).show()
+                        if (result?.code == 200)
+                            PageManager.updateAllPage()
                     }
                 })
         }

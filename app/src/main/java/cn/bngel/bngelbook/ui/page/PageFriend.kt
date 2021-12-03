@@ -84,6 +84,7 @@ object PageFriend: BasePage() {
         ) {
             val intent = Intent(ActivityManager.getCurActivity(), UserDetailActivity::class.java)
             intent.putExtra("user", user)
+            intent.putExtra("menuType", 2)
             ActivityManager.getCurActivity()?.launcher?.launch(intent)
         }, verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
