@@ -10,9 +10,10 @@ object PageManager {
     private val pages = mapOf(
         MainPages.ACCOUNT_PAGE to PageAccount,
         MainPages.FRIEND_PAGE to PageFriend,
-        MainPages.HOME_PAGE to PageHome
+        MainPages.HOME_PAGE to PageHome,
+        MainPages.DEFAULT_PAGE to PageDefault
     )
-    private val curPage = MutableLiveData(MainPages.HOME_PAGE)
+    private val curPage = MutableLiveData(MainPages.DEFAULT_PAGE)
 
     fun registerPageManager(owner: LifecycleOwner) {
         curPage.observe(owner) { newPage ->

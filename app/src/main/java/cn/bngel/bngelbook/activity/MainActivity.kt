@@ -31,10 +31,7 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.userDao.User
 import cn.bngel.bngelbook.network.UserApi
-import cn.bngel.bngelbook.ui.page.PageHome
-import cn.bngel.bngelbook.ui.page.PageAccount
-import cn.bngel.bngelbook.ui.page.PageFriend
-import cn.bngel.bngelbook.ui.page.PageManager
+import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -43,7 +40,7 @@ import kotlinx.coroutines.launch
 class MainActivity : BaseActivity() {
 
     private val loginState = mutableStateOf(GlobalVariables.USER != null)
-    private val pageState = mutableStateOf(PageManager.getCurPage())
+    private val pageState = mutableStateOf(MainPages.DEFAULT_PAGE)
     private val userDays = mutableStateOf(0)
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
@@ -57,6 +54,7 @@ class MainActivity : BaseActivity() {
                 if (loginState.value) {
                     val user = data.getSerializableExtra("userInfo") as User
                     GlobalVariables.USER = user
+                    setPage(MainPages.HOME_PAGE)
                 }
             }
             val updateRequired = data.getBooleanExtra("updateState", false)
@@ -110,6 +108,7 @@ class MainActivity : BaseActivity() {
             floatingActionButtonPosition = FabPosition.End
         ) {
             when (pageState.value) {
+                MainPages.DEFAULT_PAGE -> PageDefault.DefaultPage()
                 MainPages.HOME_PAGE -> PageHome.HomePage()
                 MainPages.ACCOUNT_PAGE -> PageAccount.AccountPage()
                 MainPages.FRIEND_PAGE -> PageFriend.FriendPage()
@@ -142,6 +141,13 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         loginState.value = false
+                        this@MainActivity.getSharedPreferences("loginState", MODE_PRIVATE).edit().apply {
+                            putBoolean("state", false)
+                            putString("account","")
+                            putString("password","")
+                            apply()
+                        }
+                        setPage(MainPages.DEFAULT_PAGE)
                     }
                     .padding(20.dp)) {
                     Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "exit")
@@ -256,6 +262,7 @@ class MainActivity : BaseActivity() {
                             200 -> {
                                 GlobalVariables.USER = result.data
                                 loginState.value = true
+                                setPage(MainPages.HOME_PAGE)
                                 initUserDays()
                             }
                             else -> {
@@ -273,7 +280,7 @@ class MainActivity : BaseActivity() {
 
     private fun setPage(page: MainPages) {
         PageManager.setCurPage(page)
-        pageState.value = PageManager.getCurPage()
+        pageState.value = page
     }
 
 }

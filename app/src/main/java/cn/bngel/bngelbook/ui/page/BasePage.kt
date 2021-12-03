@@ -12,7 +12,7 @@ import cn.bngel.bngelbook.data.MainPages
 
 abstract class BasePage {
 
-    private var pageType: MainPages = MainPages.HOME_PAGE
+    private var pageType: MainPages = MainPages.DEFAULT_PAGE
     private val updateState = mutableStateOf(true)
 
     protected fun setPage(page: MainPages) {
