@@ -48,4 +48,8 @@ object FriendApi: BaseApi() {
     fun getFriendsByUserId(userId: Long, event: ((CommonResult<List<Friend>>?) -> Unit)? = null) {
         friendService.getFriendsByUserId(userId).enqueue(basicCallback(event))
     }
+
+    fun judgeFriendExists(user1Id: Long, user2Id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        friendService.judgeFriendExists(user1Id, user2Id).enqueue(basicCallback(event))
+    }
 }

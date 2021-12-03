@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.PopupProperties
 import cn.bngel.bngelbook.R
+import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.friendDao.Friend
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.data.userDao.User
@@ -34,17 +35,19 @@ import cn.bngel.bngelbook.ui.page.PageManager
 class UserDetailActivity : BaseActivity() {
 
     private var user: User? = null
-    private var menuType: Int = -1
+    private val menuTypeUnknown = -1
+    private var menuType: Int = menuTypeUnknown
     private val menuExpanded = mutableStateOf(false)
     private val menuTypeSelf = 1
     private val menuTypeFriend = 2
     private val menuTypeStranger = 3
+    private val menuTypeUpdated = mutableStateOf(false)
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         user = intent.getSerializableExtra("user") as User
-        menuType = intent.getIntExtra("menuType", -1)
 
         setContent {
             BngelbookTheme {
@@ -58,10 +61,36 @@ class UserDetailActivity : BaseActivity() {
 
     @Composable
     fun UserDetailPage() {
+        if (!menuTypeUpdated.value) {
+            initType()
+        }
         Column {
             UserDetailTitle()
             UserDetailCard()
             UserDetailListCard()
+        }
+    }
+
+    private fun initType() {
+        user?.id?.let { it ->
+            val userId = GlobalVariables.USER?.id
+            if (userId != null && it == GlobalVariables.USER?.id) {
+                menuType = menuTypeSelf
+            }
+            else {
+                if (userId != null) {
+                    FriendApi.judgeFriendExists(it, userId) { result ->
+                        menuType = when (result?.data) {
+                            true -> menuTypeFriend
+                            false -> menuTypeStranger
+                            else -> menuTypeUnknown
+                        }
+                        if (menuType != menuTypeUnknown) {
+                            menuTypeUpdated.value = true
+                        }
+                    }
+                }
+            }
         }
     }
 

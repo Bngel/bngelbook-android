@@ -46,8 +46,16 @@ interface FriendDao: BasicDao {
     fun deleteFriendByFriend(@Body friend: Friend): Call<CommonResult<Boolean>>
 
     /**
-     * Friend - 查询好友关系
+     * Friend - 查询好友
      */
     @GET("{userId}")
     fun getFriendsByUserId(@Query("userId") userId: Long): Call<CommonResult<List<Friend>>>
+
+    /**
+     * Friend - 查询好友关系
+     */
+    @POST("judge")
+    @FormUrlEncoded
+    fun judgeFriendExists(@Field("user1Id") user1Id: Long,
+                          @Field("user2Id") user2Id: Long): Call<CommonResult<Boolean>>
 }

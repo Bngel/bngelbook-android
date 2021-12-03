@@ -117,7 +117,6 @@ class FriendAddActivity : BaseActivity() {
         Row(modifier = Modifier.fillMaxWidth().clickable {
             val intent = Intent(this@FriendAddActivity, UserDetailActivity::class.java)
             intent.putExtra("user", user)
-            intent.putExtra("menuType", 3)
             launcher.launch(intent)
         }, verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
