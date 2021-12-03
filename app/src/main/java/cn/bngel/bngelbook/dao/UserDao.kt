@@ -44,6 +44,12 @@ interface UserDao: BasicDao {
     fun postUser(@Body user: User): Call<CommonResult<Boolean>>
 
     /**
+     * User - 注册用户
+     */
+    @POST("register/{type}")
+    fun registerUser(@Body user: User, @Path("type") type: Int): Call<CommonResult<Boolean>>
+
+    /**
      * User - 注销用户
      */
     @DELETE(".")

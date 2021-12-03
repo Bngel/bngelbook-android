@@ -6,45 +6,48 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import cn.bngel.bngelbook.data.userDao.User
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 
-class LoginActivity : BaseActivity() {
+class RegisterActivity : BaseActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BngelbookTheme {
+                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    LoginPage()
+                    RegisterPage()
                 }
             }
         }
     }
 
     @Composable
-    fun LoginPage() {
+    fun RegisterPage() {
         val loading = remember {
             mutableStateOf(false)
         }
         if (loading.value)
-            Dialog_Loading{loading.value = false}
+            Dialog_Loading { loading.value = false }
         Box(contentAlignment = Alignment.Center, modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -64,7 +67,7 @@ class LoginActivity : BaseActivity() {
                         shape = RoundedCornerShape(20.dp)
                     )
                     .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 30.dp)) {
-                Text(text = "Welcome", fontSize = 22.sp, modifier = Modifier
+                Text(text = "Last Step", fontSize = 22.sp, modifier = Modifier
                     .padding(top = 10.dp, bottom = 30.dp)
                     .align(Alignment.CenterHorizontally))
                 var userAccount by remember {
@@ -73,14 +76,27 @@ class LoginActivity : BaseActivity() {
                 var userPassword by remember {
                     mutableStateOf("")
                 }
+                var username by remember {
+                    mutableStateOf("")
+                }
+                TextField(modifier = Modifier.padding(10.dp),
+                    value = username,
+                    label = { Text(text = "Username", fontSize = 12.sp) } ,
+                    singleLine = true,
+                    placeholder = { Text(text = "请输入昵称", fontSize = 16.sp) },
+                    onValueChange = {
+                        username = it
+                    })
                 TextField(modifier = Modifier.padding(10.dp),
                     value = userAccount,
                     label = { Text(text = "Account", fontSize = 12.sp) } ,
                     singleLine = true,
-                    placeholder = { Text(text = "请输入手机号/邮箱", fontSize = 16.sp) },
+                    placeholder = { Text(text = "请输入手机号", fontSize = 16.sp) },
                     onValueChange = {
                         userAccount = it
-                    })
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number)
+                )
                 TextField(modifier = Modifier.padding(10.dp),
                     value = userPassword,
                     label = { Text(text = "Password", fontSize = 12.sp) } ,
@@ -99,58 +115,28 @@ class LoginActivity : BaseActivity() {
                         loading.value = true
                         val account = userAccount
                         val password = userPassword
-                        UserApi.postUserLogin(account, password) { result ->
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            if (result != null) {
-                                when (result.code) {
-                                    200 -> {
-                                        intent.putExtra("loginState", true)
-                                        intent.putExtra("userInfo", result.data)
-                                        this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
-                                        getSharedPreferences("loginState", MODE_PRIVATE).edit {
-                                            putBoolean("state", true)
-                                            putString("account", account)
-                                            putString("password", password)
-                                        }
-                                        Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
-                                        finish()
-                                    }
-                                    400 -> {
-                                        intent.putExtra("loginState", false)
-                                        this@LoginActivity.setResult(RESULT_OK, intent)
-                                        Toast.makeText(this@LoginActivity, "用户名或密码错误", Toast.LENGTH_SHORT).show()
-                                    }
-                                    else -> {
-                                        intent.putExtra("loginState", false)
-                                        this@LoginActivity.setResult(RESULT_OK, intent)
-                                        Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
-                                    }
+                        val usernameText = username
+                        UserApi.registerUserByPhone(
+                            User(null,null,null,null,password,
+                                account,null,null,usernameText)) { result ->
+                            if (result != null) loading.value = false
+                            when (result?.code) {
+                                200 -> {
+                                    Toast.makeText(this@RegisterActivity, "注册成功", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
+                                411 -> {
+                                    Toast.makeText(this@RegisterActivity, "手机号已被注册", Toast.LENGTH_SHORT).show()
+                                }
+                                400 -> {
+                                    Toast.makeText(this@RegisterActivity, "注册失败", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            else {
-                                intent.putExtra("loginState", false)
-                                this@LoginActivity.setResult(RESULT_OK, intent)
-                                Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
-                            }
-                            loading.value = false
                         }
-                    }) {
-                    Text(text = "登录")
-                }
-                Row(modifier = Modifier.padding(10.dp)) {
-                    Text(text = "注册账号", textAlign = TextAlign.Start, fontSize = 13.sp,
-                        modifier = Modifier.weight(1F).clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
-                            launcher.launch(intent)
-                        })
-                    Text(text = "找回密码", textAlign = TextAlign.End, fontSize = 13.sp,
-                        modifier = Modifier.weight(1F))
+                    }){
+                    Text(text = "注册")
                 }
             }
         }
     }
-
 }

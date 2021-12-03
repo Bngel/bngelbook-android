@@ -21,6 +21,10 @@ object UserApi: BaseApi() {
         userService.postUser(user).enqueue(basicCallback(event))
     }
 
+    fun registerUserByPhone(user: User, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        userService.registerUser(user, 0).enqueue(basicCallback(event))
+    }
+
     fun deleteUserById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
         userService.deleteUserById(id).enqueue(basicCallback(event))
     }
