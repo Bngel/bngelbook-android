@@ -53,7 +53,7 @@ class BillSaveActivity : BaseActivity() {
                 Surface(color = MaterialTheme.colors.background) {
                     BillSavePage()
                     if (loading.value)
-                        UiWidget.Dialog_Loading()
+                        UiWidget.Dialog_Loading{loading.value = false}
                 }
             }
         }
@@ -281,7 +281,7 @@ class BillSaveActivity : BaseActivity() {
             mutableStateOf(curAccount.value)
         }
         getUserAccounts()
-        Dialog(onDismissRequest = {}) {
+        Dialog(onDismissRequest = { accountSelected.value = false}) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier

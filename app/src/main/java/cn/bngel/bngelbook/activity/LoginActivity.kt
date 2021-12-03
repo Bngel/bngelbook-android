@@ -42,7 +42,7 @@ class LoginActivity : BaseActivity() {
             mutableStateOf(false)
         }
         if (loading.value)
-            Dialog_Loading()
+            Dialog_Loading{loading.value = false}
         Scaffold{
             Box(contentAlignment = Alignment.Center, modifier = Modifier
                 .fillMaxWidth()

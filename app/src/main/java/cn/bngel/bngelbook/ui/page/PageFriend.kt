@@ -48,7 +48,7 @@ object PageFriend: BasePage() {
             FriendList()
         }
         if (loading.value)
-            UiWidget.Dialog_Loading()
+            UiWidget.Dialog_Loading{loading.value = false}
     }
 
     @Composable

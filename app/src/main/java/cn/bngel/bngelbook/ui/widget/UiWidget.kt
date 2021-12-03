@@ -24,13 +24,14 @@ import com.google.accompanist.glide.rememberGlidePainter
 object UiWidget {
 
     @Composable
-    fun Dialog_Loading() {
+    fun Dialog_Loading(properties: DialogProperties? = null,
+                       onDismissRequest: (() -> Unit)? = null) {
         val dialogProperties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = false
         )
         Dialog(onDismissRequest = {},
-            properties = dialogProperties,
+            properties = properties ?: dialogProperties,
         ) {
             Column(modifier = Modifier
                 .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))

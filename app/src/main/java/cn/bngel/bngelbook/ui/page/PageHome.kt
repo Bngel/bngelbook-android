@@ -61,7 +61,7 @@ object PageHome: BasePage() {
             if (getUpdate())
                 updateBills()
             if (loadingBills.value) {
-                Dialog_Loading()
+                Dialog_Loading{loadingBills.value = false}
             }
             HomeBillList(billList)
         }
