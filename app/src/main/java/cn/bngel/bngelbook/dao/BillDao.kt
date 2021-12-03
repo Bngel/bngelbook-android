@@ -45,6 +45,13 @@ interface BillDao: BasicDao {
     fun getBillsByBookId(@Path("bookId") bookId: Long): Call<CommonResult<List<Bill>>>
 
     /**
+     * Bill - 查询账本当月账单
+     */
+    @GET("book/{bookId}/{month}")
+    fun getMonthBillsByBookId(@Path("bookId") bookId: Long,
+                              @Path("month") month: Int): Call<CommonResult<List<Bill>>>
+
+    /**
      * Bill - 查询账户账单
      */
     @GET("account/{accountId}")

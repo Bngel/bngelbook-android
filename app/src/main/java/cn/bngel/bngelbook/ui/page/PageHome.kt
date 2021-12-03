@@ -35,6 +35,7 @@ import cn.bngel.bngelbook.data.bookDao.Book
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.network.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
+import java.util.*
 
 object PageHome: BasePage() {
 
@@ -46,7 +47,7 @@ object PageHome: BasePage() {
     private val curIncome = mutableStateOf(0.0)
     private val curBookId = mutableStateOf(4L)
     private val curBook = mutableStateOf(GlobalVariables.BOOK)
-    private val curMonth = mutableStateOf(13)
+    private val curMonth = mutableStateOf(Calendar.getInstance().get(Calendar.MONTH) + 1)
     private val curBookName = mutableStateOf("")
     private val bookSelected = mutableStateOf(false)
 
@@ -163,7 +164,7 @@ object PageHome: BasePage() {
 
     private fun updateBills() {
         loadingBills.value = true
-        BillApi.getBillsByBookId(curBookId.value) { bills ->
+        BillApi.getMonthBillsByBookId(curBookId.value, curMonth.value) { bills ->
             if (bills != null) {
                 if (bills.data != null) {
                     billList.clear()

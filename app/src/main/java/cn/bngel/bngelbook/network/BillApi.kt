@@ -32,6 +32,10 @@ object BillApi: BaseApi() {
         billService.getBillsByBookId(bookId).enqueue(basicCallback(event))
     }
 
+    fun getMonthBillsByBookId(bookId: Long, month: Int, event: ((CommonResult<List<Bill>>?) -> Unit)? = null) {
+        billService.getMonthBillsByBookId(bookId, month).enqueue(basicCallback(event))
+    }
+
     fun getBillsByAccountId(accountId: Long, event: ((CommonResult<List<Bill>>?) -> Unit)? = null) {
         billService.getBillsByAccountId(accountId).enqueue(basicCallback(event))
     }
