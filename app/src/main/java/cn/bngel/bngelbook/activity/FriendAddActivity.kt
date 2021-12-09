@@ -30,8 +30,8 @@ import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.bean.Friend
 import cn.bngel.bngelbook.data.bean.User
-import cn.bngel.bngelbook.network.FriendApi
-import cn.bngel.bngelbook.network.UserApi
+import cn.bngel.bngelbook.network.api.FriendApi
+import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 

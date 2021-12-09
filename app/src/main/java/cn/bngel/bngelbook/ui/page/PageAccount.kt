@@ -23,8 +23,8 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Account
 import cn.bngel.bngelbook.data.bean.Book
-import cn.bngel.bngelbook.network.AccountApi
-import cn.bngel.bngelbook.network.BookApi
+import cn.bngel.bngelbook.network.api.AccountApi
+import cn.bngel.bngelbook.network.api.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
 object PageAccount: BasePage() {

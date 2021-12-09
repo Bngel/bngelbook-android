@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.bean.Bill
-import cn.bngel.bngelbook.network.AccountApi
-import cn.bngel.bngelbook.network.BillApi
+import cn.bngel.bngelbook.network.api.AccountApi
+import cn.bngel.bngelbook.network.api.BillApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 

@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.data.bean.User
-import cn.bngel.bngelbook.network.UserApi
+import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 

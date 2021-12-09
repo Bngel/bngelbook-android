@@ -2,7 +2,6 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
@@ -32,7 +31,7 @@ import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.User
-import cn.bngel.bngelbook.network.UserApi
+import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.CoroutineScope

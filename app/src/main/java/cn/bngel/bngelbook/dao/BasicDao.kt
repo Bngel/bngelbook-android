@@ -1,6 +1,6 @@
 package cn.bngel.bngelbook.dao
 
-import cn.bngel.bngelbook.network.TimeoutInterceptor
+import cn.bngel.bngelbook.network.interceptor.TimeoutInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

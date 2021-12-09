@@ -1,9 +1,10 @@
-package cn.bngel.bngelbook.network
+package cn.bngel.bngelbook.network.api
 
 import cn.bngel.bngelbook.dao.AccountDao
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.bean.Account
+import cn.bngel.bngelbook.utils.NetworkUtils
 
 object AccountApi: BaseApi() {
 
@@ -12,18 +13,22 @@ object AccountApi: BaseApi() {
     }
 
     fun postAccount(account: Account, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         accountService.postAccount(account).enqueue(basicCallback(event))
     }
 
     fun deleteAccountById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         accountService.deleteAccountById(id).enqueue(basicCallback(event))
     }
 
     fun updateAccountById(account: Account, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         accountService.updateAccountById(account).enqueue(basicCallback(event))
     }
 
     fun getAccountById(id: Long, event: ((CommonResult<Account>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         accountService.getAccountById(id).enqueue(basicCallback(event))
     }
 

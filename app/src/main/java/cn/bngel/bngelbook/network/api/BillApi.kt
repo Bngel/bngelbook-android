@@ -1,9 +1,10 @@
-package cn.bngel.bngelbook.network
+package cn.bngel.bngelbook.network.api
 
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.dao.BillDao
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.bean.Bill
+import cn.bngel.bngelbook.utils.NetworkUtils
 
 object BillApi: BaseApi() {
 
@@ -12,30 +13,37 @@ object BillApi: BaseApi() {
     }
 
     fun postBill(bill: Bill, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.postBill(bill).enqueue(basicCallback(event))
     }
 
     fun deleteBillById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.deleteBillById(id).enqueue(basicCallback(event))
     }
 
     fun updateBillById(bill: Bill, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.updateBillById(bill).enqueue(basicCallback(event))
     }
 
     fun getBillById(id: Long, event: ((CommonResult<Bill>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.getBillById(id).enqueue(basicCallback(event))
     }
 
     fun getBillsByBookId(bookId: Long, event: ((CommonResult<List<Bill>>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.getBillsByBookId(bookId).enqueue(basicCallback(event))
     }
 
     fun getMonthBillsByBookId(bookId: Long, month: Int, event: ((CommonResult<List<Bill>>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.getMonthBillsByBookId(bookId, month).enqueue(basicCallback(event))
     }
 
     fun getBillsByAccountId(accountId: Long, event: ((CommonResult<List<Bill>>?) -> Unit)? = null) {
+        if (!NetworkUtils.isNetworkConnected()) return
         billService.getBillsByAccountId(accountId).enqueue(basicCallback(event))
     }
 }

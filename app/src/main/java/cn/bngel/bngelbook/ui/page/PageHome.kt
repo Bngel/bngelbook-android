@@ -31,8 +31,8 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bill
 import cn.bngel.bngelbook.data.bean.Book
-import cn.bngel.bngelbook.network.BillApi
-import cn.bngel.bngelbook.network.BookApi
+import cn.bngel.bngelbook.network.api.BillApi
+import cn.bngel.bngelbook.network.api.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 import java.util.*
 

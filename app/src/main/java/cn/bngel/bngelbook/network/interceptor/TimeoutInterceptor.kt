@@ -1,4 +1,4 @@
-package cn.bngel.bngelbook.network
+package cn.bngel.bngelbook.network.interceptor
 
 import android.util.Log
 import cn.bngel.bngelbook.data.CommonResult

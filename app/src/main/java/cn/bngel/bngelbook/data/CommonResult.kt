@@ -9,8 +9,11 @@ data class CommonResult<T>(
 ): Serializable {
 
     companion object {
+
         const val SUCCESS_CODE = 200
         const val FAILURE_CODE = 400
         const val TIME_OUT_CODE = 408
+        const val NO_NETWORK_CODE = 498
+
     }
 }

@@ -26,7 +26,7 @@ import cn.bngel.bngelbook.activity.UserDetailActivity
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.User
-import cn.bngel.bngelbook.network.UserApi
+import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
 object PageFriend: BasePage() {

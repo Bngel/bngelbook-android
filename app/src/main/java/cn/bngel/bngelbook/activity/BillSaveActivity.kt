@@ -25,9 +25,9 @@ import androidx.core.text.isDigitsOnly
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.bean.Account
 import cn.bngel.bngelbook.data.bean.Bill
-import cn.bngel.bngelbook.network.AccountApi
-import cn.bngel.bngelbook.network.BillApi
-import cn.bngel.bngelbook.ui.BillType
+import cn.bngel.bngelbook.network.api.AccountApi
+import cn.bngel.bngelbook.network.api.BillApi
+import cn.bngel.bngelbook.utils.UiUtils
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
@@ -133,7 +133,7 @@ class BillSaveActivity : BaseActivity() {
             .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Row(modifier = Modifier.weight(1F), verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = BillType.getTypeImg(curType.value)), contentDescription = "balance",
+                Image(painter = painterResource(id = UiUtils.getTypeImg(curType.value)), contentDescription = "balance",
                     modifier = Modifier.padding(5.dp))
                 Text(text = curType.value, fontSize = 20.sp, modifier = Modifier.padding(start = 10.dp, end = 10.dp))
             }
@@ -174,7 +174,7 @@ class BillSaveActivity : BaseActivity() {
                     enabled = true,
                     onClick = onClick
                 )) {
-            Image(painter = painterResource(id = BillType.getTypeImg(type)), contentDescription = "billType",
+            Image(painter = painterResource(id = UiUtils.getTypeImg(type)), contentDescription = "billType",
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp))

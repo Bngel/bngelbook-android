@@ -1,4 +1,4 @@
-package cn.bngel.bngelbook.ui
+package cn.bngel.bngelbook.utils
 
 import cn.bngel.bngelbook.R
 
@@ -9,7 +9,7 @@ import cn.bngel.bngelbook.R
  * @description:
  */
 
-object BillType {
+object UiUtils {
 
     private val billTypeMap = mapOf(
         "测试" to R.drawable.default_profile
