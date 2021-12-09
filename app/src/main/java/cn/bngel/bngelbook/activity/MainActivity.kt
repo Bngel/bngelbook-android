@@ -56,6 +56,7 @@ class MainActivity : BaseActivity() {
                     val user = data.getSerializableExtra("userInfo") as User
                     GlobalVariables.USER = user
                     setPage(MainPages.HOME_PAGE)
+                    initUserDays()
                 }
             }
             val updateRequired = data.getBooleanExtra("updateState", false)
@@ -121,7 +122,7 @@ class MainActivity : BaseActivity() {
     fun Drawer() {
         if (loginState.value) {
             Column {
-                Drawer_ProfileCard(profile = "", username = GlobalVariables.USER?.username?:"", daysCount = userDays.value)
+                Drawer_ProfileCard(profile = "", username = GlobalVariables.USER?.username?:"")
                 Column(modifier = Modifier.weight(1f)) {
                     Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") {
                         setPage(MainPages.HOME_PAGE)
@@ -158,13 +159,13 @@ class MainActivity : BaseActivity() {
         }
         else {
             Column {
-                Drawer_ProfileCard(profile = "", username = "点击登录", daysCount = 0)
+                Drawer_ProfileCard(profile = "", username = "点击登录")
             }
         }
     }
 
     @Composable
-    fun Drawer_ProfileCard(profile: String = "", username: String = "", daysCount: Int = 0) {
+    fun Drawer_ProfileCard(profile: String = "", username: String = "") {
         val scaffoldState = rememberScaffoldState()
         val scope = rememberCoroutineScope()
         Row(modifier = Modifier
@@ -206,7 +207,7 @@ class MainActivity : BaseActivity() {
                     modifier = Modifier.weight(5f)
                 ) {
                     Text(text = username)
-                    Text(text = "已记账: $daysCount 天")
+                    Text(text = "已记账: ${userDays.value} 天")
                 }
             }
         }

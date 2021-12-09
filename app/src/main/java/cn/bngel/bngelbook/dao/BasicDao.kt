@@ -35,7 +35,7 @@ interface BasicDao {
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
-                .addNetworkInterceptor(TimeoutInterceptor())
+                .addInterceptor(TimeoutInterceptor())
                 .build()
 
             val retrofit: Retrofit = Retrofit.Builder()

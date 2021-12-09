@@ -5,6 +5,7 @@ import cn.bngel.bngelbook.data.CommonResult
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.SocketException
 
 abstract class BaseApi {
 
@@ -21,9 +22,10 @@ abstract class BaseApi {
 
         override fun onFailure(call: Call<T>, t: Throwable) {
             Log.d("bngelbook_error", t.cause.toString())
-            if (event != null) {
-                event(null)
-            }
+            if (t is SocketException)
+                call.clone().enqueue(this)
+            else
+                if (event != null) event(null)
         }
     }
 
