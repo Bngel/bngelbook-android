@@ -2,6 +2,7 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import cn.bngel.bngelbook.R
+import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.User
@@ -258,7 +260,7 @@ class MainActivity : BaseActivity() {
                 UserApi.postUserLogin(account, password) { result ->
                     if (result != null) {
                         when (result.code) {
-                            200 -> {
+                            CommonResult.SUCCESS_CODE -> {
                                 GlobalVariables.USER = result.data
                                 loginState.value = true
                                 setPage(MainPages.HOME_PAGE)
