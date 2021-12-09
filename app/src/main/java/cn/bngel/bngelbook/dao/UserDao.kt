@@ -1,14 +1,9 @@
 package cn.bngel.bngelbook.dao
 
 import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.userDao.User
-import com.google.gson.GsonBuilder
-import okhttp3.OkHttpClient
+import cn.bngel.bngelbook.data.bean.User
 import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import java.util.concurrent.TimeUnit
 
 
 /**

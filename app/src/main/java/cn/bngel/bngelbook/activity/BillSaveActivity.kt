@@ -3,7 +3,6 @@ package cn.bngel.bngelbook.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,10 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
-import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.accountDao.Account
-import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.data.bean.Account
+import cn.bngel.bngelbook.data.bean.Bill
 import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.BillType

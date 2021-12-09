@@ -29,7 +29,7 @@ import androidx.core.content.edit
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme

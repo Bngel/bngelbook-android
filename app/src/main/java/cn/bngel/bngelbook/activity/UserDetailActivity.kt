@@ -23,12 +23,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.window.PopupProperties
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.friendDao.Friend
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.FriendApi
 import cn.bngel.bngelbook.ui.page.PageManager
 

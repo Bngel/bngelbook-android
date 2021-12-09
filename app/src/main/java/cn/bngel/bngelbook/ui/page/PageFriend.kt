@@ -1,8 +1,6 @@
 package cn.bngel.bngelbook.ui.page
 
 import android.content.Intent
-import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,11 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.activity.ActivityManager
-import cn.bngel.bngelbook.activity.MainActivity
 import cn.bngel.bngelbook.activity.UserDetailActivity
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.widget.UiWidget
 

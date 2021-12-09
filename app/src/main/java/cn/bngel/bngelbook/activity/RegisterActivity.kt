@@ -1,9 +1,7 @@
 package cn.bngel.bngelbook.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,11 +15,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.edit
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
@@ -118,7 +114,8 @@ class RegisterActivity : BaseActivity() {
                         val usernameText = username
                         UserApi.registerUserByPhone(
                             User(null,null,null,null,password,
-                                account,null,null,usernameText)) { result ->
+                                account,null,null,usernameText)
+                        ) { result ->
                             if (result != null) loading.value = false
                             when (result?.code) {
                                 200 -> {

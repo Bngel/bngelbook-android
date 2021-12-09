@@ -1,4 +1,4 @@
-package cn.bngel.bngelbook.data.billDao
+package cn.bngel.bngelbook.data.bean
 
 import java.io.Serializable
 import java.sql.Date

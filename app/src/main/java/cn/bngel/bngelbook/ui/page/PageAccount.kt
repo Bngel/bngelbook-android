@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
-import cn.bngel.bngelbook.data.accountDao.Account
-import cn.bngel.bngelbook.data.bookDao.Book
+import cn.bngel.bngelbook.data.bean.Account
+import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget

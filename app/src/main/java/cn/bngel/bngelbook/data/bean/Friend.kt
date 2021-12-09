@@ -1,4 +1,4 @@
-package cn.bngel.bngelbook.data.friendDao
+package cn.bngel.bngelbook.data.bean
 
 import java.io.Serializable
 

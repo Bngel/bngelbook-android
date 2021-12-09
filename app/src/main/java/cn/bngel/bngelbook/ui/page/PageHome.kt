@@ -27,11 +27,10 @@ import androidx.compose.ui.window.Dialog
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.activity.BillDetailActivity
-import cn.bngel.bngelbook.activity.LoginActivity
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
-import cn.bngel.bngelbook.data.billDao.Bill
-import cn.bngel.bngelbook.data.bookDao.Book
+import cn.bngel.bngelbook.data.bean.Bill
+import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.network.BookApi
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading

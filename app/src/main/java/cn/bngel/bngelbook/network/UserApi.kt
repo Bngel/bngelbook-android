@@ -3,8 +3,7 @@ package cn.bngel.bngelbook.network
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.dao.UserDao
 import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.userDao.User
-import retrofit2.Call
+import cn.bngel.bngelbook.data.bean.User
 
 object UserApi: BaseApi() {
 

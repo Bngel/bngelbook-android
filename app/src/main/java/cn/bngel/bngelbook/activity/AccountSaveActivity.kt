@@ -27,11 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.accountDao.Account
-import cn.bngel.bngelbook.data.bookDao.Book
+import cn.bngel.bngelbook.data.bean.Account
+import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BookApi
-import cn.bngel.bngelbook.ui.page.PageAccount
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget

@@ -1,7 +1,7 @@
 package cn.bngel.bngelbook.dao
 
 import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.data.bean.Bill
 import retrofit2.Call
 import retrofit2.http.*
 

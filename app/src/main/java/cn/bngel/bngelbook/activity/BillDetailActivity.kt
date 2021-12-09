@@ -3,7 +3,6 @@ package cn.bngel.bngelbook.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -15,7 +14,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
-import cn.bngel.bngelbook.data.billDao.Bill
+import cn.bngel.bngelbook.data.bean.Bill
 import cn.bngel.bngelbook.network.AccountApi
 import cn.bngel.bngelbook.network.BillApi
 import cn.bngel.bngelbook.ui.page.PageManager

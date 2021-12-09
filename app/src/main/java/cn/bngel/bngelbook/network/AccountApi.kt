@@ -3,7 +3,7 @@ package cn.bngel.bngelbook.network
 import cn.bngel.bngelbook.dao.AccountDao
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.accountDao.Account
+import cn.bngel.bngelbook.data.bean.Account
 
 object AccountApi: BaseApi() {
 

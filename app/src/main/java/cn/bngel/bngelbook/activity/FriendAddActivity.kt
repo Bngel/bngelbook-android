@@ -3,7 +3,6 @@ package cn.bngel.bngelbook.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -30,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.friendDao.Friend
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.Friend
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.FriendApi
 import cn.bngel.bngelbook.network.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager

@@ -1,8 +1,6 @@
 package cn.bngel.bngelbook.network
 
 import android.util.Log
-import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.userDao.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -1,11 +1,10 @@
 package cn.bngel.bngelbook.network
 
-import android.util.Log
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.dao.FriendDao
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.friendDao.Friend
+import cn.bngel.bngelbook.data.bean.Friend
 
 object FriendApi: BaseApi() {
 

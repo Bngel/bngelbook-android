@@ -3,8 +3,7 @@ package cn.bngel.bngelbook.network
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.dao.BillDao
 import cn.bngel.bngelbook.data.CommonResult
-import cn.bngel.bngelbook.data.billDao.Bill
-import cn.bngel.bngelbook.data.userDao.User
+import cn.bngel.bngelbook.data.bean.Bill
 
 object BillApi: BaseApi() {
 
