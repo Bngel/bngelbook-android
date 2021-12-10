@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.net.SocketException
+import java.net.SocketTimeoutException
 
 abstract class BaseApi {
 
@@ -21,9 +22,10 @@ abstract class BaseApi {
         }
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            Log.d("bngelbook_error", t.cause.toString())
-            if (t is SocketException)
+            Log.d("bngelbook_error", "捕获到异常: " + t.cause.toString())
+            if (t is SocketException || t is SocketTimeoutException) {
                 call.clone().enqueue(this)
+            }
             else
                 if (event != null) event(null)
         }

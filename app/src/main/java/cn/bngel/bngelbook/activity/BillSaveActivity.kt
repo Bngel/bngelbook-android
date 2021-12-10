@@ -106,16 +106,34 @@ class BillSaveActivity : BaseActivity() {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)) {
                     Text(text = "收入", color = if (curIo.value == 1) Color(0xFFFFFFFF) else Color(0xFF66CCFF),
-                        modifier = Modifier.border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(1.dp))
-                            .background(color = if (curIo.value == 1) Color(0xFF66CCFF) else Color(0xFFFFFFFF))
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color(0xFF66CCFF),
+                                shape = RoundedCornerShape(1.dp)
+                            )
+                            .background(
+                                color = if (curIo.value == 1) Color(0xFF66CCFF) else Color(
+                                    0xFFFFFFFF
+                                )
+                            )
                             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) { if (curIo.value != 1) curIo.value = 1 })
                     Text(text = "支出", color = if (curIo.value == 0) Color(0xFFFFFFFF) else Color(0xFF66CCFF),
-                        modifier = Modifier.border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(1.dp))
-                            .background(color = if (curIo.value == 0) Color(0xFF66CCFF) else Color(0xFFFFFFFF))
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                color = Color(0xFF66CCFF),
+                                shape = RoundedCornerShape(1.dp)
+                            )
+                            .background(
+                                color = if (curIo.value == 0) Color(0xFF66CCFF) else Color(
+                                    0xFFFFFFFF
+                                )
+                            )
                             .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
@@ -151,9 +169,14 @@ class BillSaveActivity : BaseActivity() {
                 Row {
                     for (j in 0 until size) {
                         if (i * size + j >= types.size)
-                            break
-                        BillTypeChoice(type = types[i * size + j]) {
-                            curType.value = types[i * size + j]
+                            Spacer(modifier = Modifier.weight(1F))
+                        else {
+                            BillTypeChoice(
+                                type = types[i * size + j],
+                                modifier = Modifier.weight(1F)
+                            ) {
+                                curType.value = types[i * size + j]
+                            }
                         }
                     }
                 }
@@ -162,9 +185,9 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillTypeChoice(type: String, onClick: () -> Unit) {
+    fun BillTypeChoice(type: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
+            modifier = modifier
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -178,7 +201,7 @@ class BillSaveActivity : BaseActivity() {
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp))
-            Text(text = type, fontSize = 15.sp, modifier = Modifier.padding(top = 5.dp))
+            Text(text = type, fontSize = 13.sp, modifier = Modifier.padding(top = 5.dp))
         }
     }
 
@@ -232,7 +255,7 @@ class BillSaveActivity : BaseActivity() {
 
     @Composable
     fun Calculator() {
-        Column(modifier = Modifier.background(Color.Black)) {
+        Column(modifier = Modifier.background(Color(0xFF66CCFF))) {
             Row {
                 CalCell(cell = "7", modifier = Modifier.weight(1F))
                 CalCell(cell = "8", modifier = Modifier.weight(1F))
@@ -264,9 +287,9 @@ class BillSaveActivity : BaseActivity() {
     fun CalCell(cell: String, modifier: Modifier = Modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
             modifier = modifier
-                .border(width = 1.dp, color = Color.Yellow)
+                .border(width = 1.dp, color = Color.Gray)
                 .clickable { calculate(cell) }) {
-            Text(text = cell, modifier = Modifier.padding(10.dp), fontSize = 18.sp, color = Color.Yellow)
+            Text(text = cell, modifier = Modifier.padding(10.dp), fontSize = 18.sp, color = Color.White)
         }
     }
 
@@ -289,8 +312,9 @@ class BillSaveActivity : BaseActivity() {
                     .fillMaxHeight(0.6F)
             ) {
                 LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1F)
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier
+                        .weight(1F)
                         .padding(10.dp)
                 ) {
                     if (accountList.size != 0) {
@@ -314,8 +338,12 @@ class BillSaveActivity : BaseActivity() {
                 }
                 Text(text = "确定", fontSize = 16.sp, color = Color(0xFF66CCFF), modifier = Modifier
                     .background(shape = RoundedCornerShape(10.dp), color = Color.White)
-                    .border(width = 1.dp, color = Color(0xFF66CCFF), shape = RoundedCornerShape(10.dp))
-                    .clickable  {
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xFF66CCFF),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .clickable {
                         accountSelected.value = false
                         curAccountName.value = selectedAccount.value
                         curAccount.value = selectedAccountId.value
