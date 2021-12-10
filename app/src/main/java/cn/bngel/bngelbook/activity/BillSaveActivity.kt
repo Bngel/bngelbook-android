@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ class BillSaveActivity : BaseActivity() {
     private val curAccount = mutableStateOf<Long?>(null)
     private val curAccountName = mutableStateOf("不选账户")
     private var curPoint = -1
-
+    private val tagDialogState = mutableStateOf(false)
     private val accountDialogState = mutableStateOf(false)
     private val accountList = mutableStateListOf<Account>()
     private val loading = mutableStateOf(false)
@@ -66,7 +67,7 @@ class BillSaveActivity : BaseActivity() {
             BillTypeChoices(types = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他"),size = 5,
                 modifier = Modifier.weight(1F))
             TagsRow(tags = listOf("早餐","午餐","晚餐","超市"))
-            BottomRow(account = curAccountName.value)
+            BottomRow()
             Calculator()
         }
     }
@@ -233,14 +234,18 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    private fun BottomRow(account: String) {
+    private fun BottomRow() {
         Row(modifier = Modifier
             .padding(5.dp)
             .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Row(modifier = Modifier
                 .weight(1F)
                 .padding(start = 10.dp, end = 10.dp)) {
-                Text(text = if (account == "") "不选账户" else account, fontSize = 15.sp, modifier = Modifier.clickable {
+                Text(text = if (curAccountName.value == "") "不选账户" else curAccountName.value, fontSize = 15.sp,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
                     loading.value = true
                     accountDialogState.value = true
                 })
@@ -248,10 +253,18 @@ class BillSaveActivity : BaseActivity() {
             Text(text = if (curTags.value == "") "备注" else curTags.value.trim(), fontSize = 15.sp, modifier = Modifier
                 .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
                 .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(10.dp))
-                .padding(start = 10.dp, end = 10.dp, top = 3.dp, bottom = 3.dp))
+                .padding(start = 10.dp, end = 10.dp, top = 3.dp, bottom = 3.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    tagDialogState.value = true
+                })
         }
         if (accountDialogState.value)
             AccountsDialog()
+        if (tagDialogState.value)
+            TagDialog()
     }
 
     @Composable
@@ -291,6 +304,54 @@ class BillSaveActivity : BaseActivity() {
                 .border(width = 1.dp, color = Color.Gray)
                 .clickable { calculate(cell) }) {
             Text(text = cell, modifier = Modifier.padding(10.dp), fontSize = 18.sp, color = Color.White)
+        }
+    }
+
+    @Composable
+    private fun TagDialog() {
+        val tags = remember {
+            mutableStateOf("")
+        }
+        Dialog(onDismissRequest = { tagDialogState.value = false}) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                        .padding(10.dp)) {
+                    TextField(value = tags.value, onValueChange = { newTag ->
+                        if (newTag.length <= 16)
+                            tags.value = newTag
+                    },
+                        colors = TextFieldDefaults.textFieldColors(
+                            disabledTextColor = Color.Transparent,
+                            backgroundColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent),
+                        shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9F)
+                        .fillMaxHeight(0.5F)
+                        .padding(20.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF66CCFF),
+                            shape = RoundedCornerShape(10.dp)
+                        ))
+                    Text(text = "确定", fontSize = 16.sp, color = Color(0xFF66CCFF), modifier = Modifier
+                        .background(shape = RoundedCornerShape(10.dp), color = Color.White)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF66CCFF),
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .clickable {
+                            tagDialogState.value = false
+                            curTags.value = tags.value
+                        }
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
+                }
+            }
         }
     }
 
@@ -417,7 +478,7 @@ class BillSaveActivity : BaseActivity() {
                 "" -> 0.0
                 else -> curBalance.value.trim('.').toDouble()
             }
-        val bill = Bill(null, curAccount.value, balance, GlobalVariables.BOOK?.id?:4L, null,
+        val bill = Bill(null, curAccount.value, balance, GlobalVariables.BOOK?.id?:0L, null,
                 curIo.value, curTags.value, curType.value)
         BillApi.postBill(bill) {
             loading.value = false
