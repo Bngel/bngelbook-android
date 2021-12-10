@@ -17,7 +17,7 @@ interface BasicDao {
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.1.107"
+        private const val BASE_URL = "http://192.168.1.103"
         const val USER_URL = "$BASE_URL:9001/consumer/user/"
         const val BOOK_URL = "$BASE_URL:9002/consumer/book/"
         const val ACCOUNT_URL = "$BASE_URL:9003/consumer/account/"

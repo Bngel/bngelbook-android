@@ -39,10 +39,11 @@ class BillSaveActivity : BaseActivity() {
     private val curIo = mutableStateOf(0)
     private val curAccount = mutableStateOf<Long?>(null)
     private val curAccountName = mutableStateOf("不选账户")
-    private val accountSelected = mutableStateOf(false)
+    private var curPoint = -1
+
+    private val accountDialogState = mutableStateOf(false)
     private val accountList = mutableStateListOf<Account>()
     private val loading = mutableStateOf(false)
-    private var curPoint = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +59,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillSavePage(){
+    private fun BillSavePage(){
         Column {
             BillSaveTitle()
             BillBalanceRow()
@@ -71,7 +72,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillSaveTitle() {
+    private fun BillSaveTitle() {
         Box(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
@@ -145,7 +146,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillBalanceRow() {
+    private fun BillBalanceRow() {
         Row(modifier = Modifier
             .border(width = 1.dp, color = Color.Gray.copy(alpha = 0.5F))
             .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp),
@@ -163,7 +164,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillTypeChoices(types: List<String>, size: Int, modifier: Modifier = Modifier) {
+    private fun BillTypeChoices(types: List<String>, size: Int, modifier: Modifier = Modifier) {
         Column(modifier = modifier.padding(top = 10.dp, bottom = 10.dp)) {
             for (i in 0 until (if (types.size % size == 0) types.size/size else types.size/size+1)) {
                 Row {
@@ -185,7 +186,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillTypeChoice(type: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    private fun BillTypeChoice(type: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
         Column(horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp)
@@ -206,7 +207,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun TagsRow(tags: List<String>) {
+    private fun TagsRow(tags: List<String>) {
         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(text = "标签", fontSize = 15.sp, modifier = Modifier.padding(5.dp))
             LazyRow(modifier = Modifier.padding(5.dp)) {
@@ -232,7 +233,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BottomRow(account: String) {
+    private fun BottomRow(account: String) {
         Row(modifier = Modifier
             .padding(5.dp)
             .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -241,7 +242,7 @@ class BillSaveActivity : BaseActivity() {
                 .padding(start = 10.dp, end = 10.dp)) {
                 Text(text = if (account == "") "不选账户" else account, fontSize = 15.sp, modifier = Modifier.clickable {
                     loading.value = true
-                    accountSelected.value = true
+                    accountDialogState.value = true
                 })
             }
             Text(text = if (curTags.value == "") "备注" else curTags.value.trim(), fontSize = 15.sp, modifier = Modifier
@@ -249,12 +250,12 @@ class BillSaveActivity : BaseActivity() {
                 .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(10.dp))
                 .padding(start = 10.dp, end = 10.dp, top = 3.dp, bottom = 3.dp))
         }
-        if (accountSelected.value)
+        if (accountDialogState.value)
             AccountsDialog()
     }
 
     @Composable
-    fun Calculator() {
+    private fun Calculator() {
         Column(modifier = Modifier.background(Color(0xFF66CCFF))) {
             Row {
                 CalCell(cell = "7", modifier = Modifier.weight(1F))
@@ -284,7 +285,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun CalCell(cell: String, modifier: Modifier = Modifier) {
+    private fun CalCell(cell: String, modifier: Modifier = Modifier) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
             modifier = modifier
                 .border(width = 1.dp, color = Color.Gray)
@@ -294,7 +295,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun AccountsDialog() {
+    private fun AccountsDialog() {
         val selectedAccount = remember {
             mutableStateOf("")
         }
@@ -302,7 +303,7 @@ class BillSaveActivity : BaseActivity() {
             mutableStateOf(curAccount.value)
         }
         getUserAccounts()
-        Dialog(onDismissRequest = { accountSelected.value = false}) {
+        Dialog(onDismissRequest = { accountDialogState.value = false}) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -344,7 +345,7 @@ class BillSaveActivity : BaseActivity() {
                         shape = RoundedCornerShape(10.dp)
                     )
                     .clickable {
-                        accountSelected.value = false
+                        accountDialogState.value = false
                         curAccountName.value = selectedAccount.value
                         curAccount.value = selectedAccountId.value
                     }

@@ -53,7 +53,7 @@ class FriendAddActivity : BaseActivity() {
     }
 
     @Composable
-    fun FriendAddPage() {
+    private fun FriendAddPage() {
         Column {
             FriendAddTitle()
             FriendAddSearch()
@@ -62,7 +62,7 @@ class FriendAddActivity : BaseActivity() {
     }
 
     @Composable
-    fun FriendAddTitle() {
+    private fun FriendAddTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -93,7 +93,7 @@ class FriendAddActivity : BaseActivity() {
     }
 
     @Composable
-    fun FriendAddSearch() {
+    private fun FriendAddSearch() {
         TextField(value = usernameState.value, onValueChange = {
             usernameState.value = it
         }, modifier = Modifier.fillMaxWidth(), leadingIcon = { Icon(Icons.Filled.Search, null)},
@@ -101,7 +101,7 @@ class FriendAddActivity : BaseActivity() {
     }
 
     @Composable
-    fun FriendAddSearchList() {
+    private fun FriendAddSearchList() {
         searchFriendsByUsername()
         LazyColumn {
             items(userListState) { user ->
@@ -111,7 +111,7 @@ class FriendAddActivity : BaseActivity() {
     }
     
     @Composable
-    fun FriendAddSearchItem(user: User) {
+    private fun FriendAddSearchItem(user: User) {
         Row(modifier = Modifier.fillMaxWidth().clickable {
             val intent = Intent(this@FriendAddActivity, UserDetailActivity::class.java)
             intent.putExtra("user", user)

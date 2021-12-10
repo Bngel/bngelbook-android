@@ -49,7 +49,7 @@ object PageFriend: BasePage() {
     }
 
     @Composable
-    fun FriendTitle() {
+    private fun FriendTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -61,7 +61,7 @@ object PageFriend: BasePage() {
     }
 
     @Composable
-    fun FriendList() {
+    private fun FriendList() {
         if (getUpdate())
             initFriends()
         if (friends.size > 0) {
@@ -74,7 +74,7 @@ object PageFriend: BasePage() {
     }
 
     @Composable
-    fun FriendCard(user: User) {
+    private fun FriendCard(user: User) {
         Row(modifier = Modifier.fillMaxWidth().clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null

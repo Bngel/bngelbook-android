@@ -10,6 +10,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody
 import java.lang.Thread.sleep
+import java.sql.Timestamp
 import java.util.*
 
 
@@ -35,7 +36,7 @@ class TimeoutInterceptor: Interceptor {
             if (repCode == 200)
                 break
             retryTimes += 1
-            Log.d("bngelbook_timeout", "拦截了一次超时请求: ${java.sql.Date(Date().time)}")
+            Log.d("bngelbook_timeout", "拦截了一次超时请求: ${Timestamp(System.currentTimeMillis())}")
             sleep(1000)
         } while (repCode == 408 && retryTimes < times)
         return response

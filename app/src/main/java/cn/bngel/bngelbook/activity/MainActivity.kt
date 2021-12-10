@@ -81,7 +81,7 @@ class MainActivity : BaseActivity() {
     }
 
     @Composable
-    fun MainPage() {
+    private fun MainPage() {
         scaffoldState = rememberScaffoldState()
         scope = rememberCoroutineScope()
         Scaffold(
@@ -120,7 +120,7 @@ class MainActivity : BaseActivity() {
     }
 
     @Composable
-    fun Drawer() {
+    private fun Drawer() {
         if (loginState.value) {
             Column {
                 Drawer_ProfileCard(profile = "", username = GlobalVariables.USER?.username?:"")
@@ -166,7 +166,7 @@ class MainActivity : BaseActivity() {
     }
 
     @Composable
-    fun Drawer_ProfileCard(profile: String = "", username: String = "") {
+    private fun Drawer_ProfileCard(profile: String = "", username: String = "") {
         val scaffoldState = rememberScaffoldState()
         val scope = rememberCoroutineScope()
         Row(modifier = Modifier
@@ -215,7 +215,7 @@ class MainActivity : BaseActivity() {
     }
 
     @Composable
-    fun Drawer_Function(imageVector: ImageVector, functionName: String, onClick: ()-> Unit) {
+    private fun Drawer_Function(imageVector: ImageVector, functionName: String, onClick: ()-> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable(

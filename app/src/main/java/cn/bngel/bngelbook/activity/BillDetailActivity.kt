@@ -54,7 +54,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillDetailPage() {
+    private fun BillDetailPage() {
         Column {
             BillDetailTitle()
             BillDetailBill()
@@ -64,7 +64,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillDetailTitle() {
+    private fun BillDetailTitle() {
         Box(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
@@ -112,7 +112,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillDetailBill() {
+    private fun BillDetailBill() {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp)) {
@@ -134,7 +134,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillDetailCard() {
+    private fun BillDetailCard() {
         val accountId = bill.value?.accountId
         if (accountId != null) {
             AccountApi.getAccountById(accountId) { result ->
@@ -155,7 +155,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun BillDetailCardRow(imageVector: ImageVector, key: String, value: String) {
+    private fun BillDetailCardRow(imageVector: ImageVector, key: String, value: String) {
         Row (modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -172,7 +172,7 @@ class BillDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun DeleteDialog() {
+    private fun DeleteDialog() {
         AlertDialog(
             onDismissRequest = {},
             confirmButton = {

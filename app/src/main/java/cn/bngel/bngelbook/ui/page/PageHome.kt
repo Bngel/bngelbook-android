@@ -68,7 +68,7 @@ object PageHome: BasePage() {
     }
 
     @Composable
-    fun HomeOverview() {
+    private fun HomeOverview() {
         getCurBook()
         Column(horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -125,7 +125,7 @@ object PageHome: BasePage() {
     }
 
     @Composable
-    fun HomeBillList(bills: List<Bill>) {
+    private fun HomeBillList(bills: List<Bill>) {
         LazyColumn {
             items(bills) { bill ->
                 HomeBill(bill)
@@ -134,7 +134,7 @@ object PageHome: BasePage() {
     }
 
     @Composable
-    fun HomeBill(bill: Bill) {
+    private fun HomeBill(bill: Bill) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp)
@@ -192,7 +192,7 @@ object PageHome: BasePage() {
     }
 
     @Composable
-    fun BooksDialog() {
+    private fun BooksDialog() {
         getUserBooks()
         val selectedBook = remember {
             mutableStateOf("")

@@ -61,7 +61,7 @@ class AccountSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun AccountSavePage() {
+    private fun AccountSavePage() {
         Column {
             AccountSaveTitle()
             if (curType.value == 0)
@@ -72,7 +72,7 @@ class AccountSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun AccountSaveTitle() {
+    private fun AccountSaveTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -157,7 +157,7 @@ class AccountSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun AccountInfoField() {
+    private fun AccountInfoField() {
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -167,7 +167,7 @@ class AccountSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun BookInfoField() {
+    private fun BookInfoField() {
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -177,7 +177,7 @@ class AccountSaveActivity : BaseActivity() {
     }
 
     @Composable
-    fun InfoInputField(info: String, data: MutableState<String>, isDigit: Boolean) {
+    private fun InfoInputField(info: String, data: MutableState<String>, isDigit: Boolean) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),

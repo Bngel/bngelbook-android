@@ -38,7 +38,7 @@ class RegisterActivity : BaseActivity() {
     }
 
     @Composable
-    fun RegisterPage() {
+    private fun RegisterPage() {
         val loading = remember {
             mutableStateOf(false)
         }

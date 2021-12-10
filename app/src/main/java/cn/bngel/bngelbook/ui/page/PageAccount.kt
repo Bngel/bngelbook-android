@@ -59,7 +59,7 @@ object PageAccount: BasePage() {
     }
 
     @Composable
-    fun AccountTitle() {
+    private fun AccountTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -71,7 +71,7 @@ object PageAccount: BasePage() {
     }
 
     @Composable
-    fun AccountOverview() {
+    private fun AccountOverview() {
         Column {
             Text(text = "净资产", fontSize = 18.sp, textAlign = TextAlign.Start ,
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
@@ -81,7 +81,7 @@ object PageAccount: BasePage() {
     }
 
     @Composable
-    fun AccountCard() {
+    private fun AccountCard() {
         if (getUpdate()) {
             AccountApi.getAccountsByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
                 if (result?.data != null) {
@@ -133,7 +133,7 @@ object PageAccount: BasePage() {
     }
 
     @Composable
-    fun BookCard() {
+    private fun BookCard() {
         if (getUpdate()) {
             BookApi.getBooksByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
                 if (result?.data != null) {

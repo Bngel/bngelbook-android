@@ -58,7 +58,7 @@ class UserDetailActivity : BaseActivity() {
 
 
     @Composable
-    fun UserDetailPage() {
+    private fun UserDetailPage() {
         if (!menuTypeUpdated.value) {
             initType()
         }
@@ -93,7 +93,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailTitle() {
+    private fun UserDetailTitle() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
@@ -145,7 +145,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailCard() {
+    private fun UserDetailCard() {
         Card(shape = RoundedCornerShape(10.dp), modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)) {
@@ -162,7 +162,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailListCard() {
+    private fun UserDetailListCard() {
         Card(shape = RoundedCornerShape(10.dp), modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)) {
@@ -176,7 +176,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailListCardItem(icon: ImageVector, text: String) {
+    private fun UserDetailListCardItem(icon: ImageVector, text: String) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(imageVector = icon,
                 contentDescription = null,
@@ -189,7 +189,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailPopupMenuForSelf() {
+    private fun UserDetailPopupMenuForSelf() {
         DropdownMenu(expanded = menuExpanded.value,
             onDismissRequest = { menuExpanded.value = false },
             offset = DpOffset(10.dp,10.dp),
@@ -201,7 +201,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailPopupMenuForFriend() {
+    private fun UserDetailPopupMenuForFriend() {
         DropdownMenu(expanded = menuExpanded.value,
             onDismissRequest = { menuExpanded.value = false },
             offset = DpOffset(10.dp,10.dp),
@@ -224,7 +224,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailPopupMenuForStranger() {
+    private fun UserDetailPopupMenuForStranger() {
         DropdownMenu(expanded = menuExpanded.value,
             onDismissRequest = { menuExpanded.value = false },
             offset = DpOffset(10.dp,10.dp),
@@ -247,7 +247,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     @Composable
-    fun UserDetailPopupMenuItem(icon: ImageVector, text: String, onClick: () -> Unit) {
+    private fun UserDetailPopupMenuItem(icon: ImageVector, text: String, onClick: () -> Unit) {
         DropdownMenuItem(onClick = {
             onClick()
         }) {
