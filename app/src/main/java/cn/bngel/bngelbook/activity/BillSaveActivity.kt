@@ -61,10 +61,17 @@ class BillSaveActivity : BaseActivity() {
 
     @Composable
     private fun BillSavePage(){
+        val types = remember {
+            mutableStateListOf<String>()
+        }
+        curIo.value.apply {
+            types.clear()
+            types.addAll(GlobalVariables.getDefaultTypes(this))
+        }
         Column {
             BillSaveTitle()
             BillBalanceRow()
-            BillTypeChoices(types = GlobalVariables.getDefaultTypes(),size = 5,
+            BillTypeChoices(types = types,size = 5,
                 modifier = Modifier.weight(1F))
             TagsRow(tags = GlobalVariables.getTagsByType(curType.value))
             BottomRow()

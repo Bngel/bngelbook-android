@@ -20,7 +20,8 @@ object GlobalVariables {
 
     fun getTagsByType(type: String) = tagsMap[type]?: listOf("杂货")
 
-    private val typesList = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他")
+    private val outTypesList = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他")
+    private val inTypesList = listOf("工资")
 
-    fun getDefaultTypes() = typesList
+    fun getDefaultTypes(io: Int) = if (io == 1) inTypesList else outTypesList
 }

@@ -62,6 +62,7 @@ class AccountSaveActivity : BaseActivity() {
 
     @Composable
     private fun AccountSavePage() {
+        curType.value = intent.getIntExtra("type", 0)
         Column {
             AccountSaveTitle()
             if (curType.value == 0)
@@ -76,7 +77,7 @@ class AccountSaveActivity : BaseActivity() {
         Box(modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp)) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.Start) {
                     Image(imageVector = Icons.Filled.Close, contentDescription = "close_btn",
                         modifier = Modifier
@@ -115,7 +116,7 @@ class AccountSaveActivity : BaseActivity() {
                             })
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 5.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Row(modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 10.dp)) {
                     Text(text = "账户", color = if (curType.value == 0) Color(0xFFFFFFFF) else Color(0xFF66CCFF),
                         modifier = Modifier

@@ -1,5 +1,8 @@
 package cn.bngel.bngelbook.ui.page
 
+import android.content.Intent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,12 +16,15 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cn.bngel.bngelbook.activity.AccountSaveActivity
+import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Account
@@ -105,7 +111,15 @@ object PageAccount: BasePage() {
                         Text(text = "账户列表", fontSize = 14.sp, modifier = Modifier
                             .padding(start = 25.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
                             .weight(1F))
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(5.dp))
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(5.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                val intent = Intent(ActivityManager.getCurActivity(), AccountSaveActivity::class.java)
+                                intent.putExtra("type", 0)
+                                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+                            })
                     }
                     LazyColumn(modifier = Modifier.padding(10.dp)) {
                         items(accounts) { account ->
@@ -153,7 +167,15 @@ object PageAccount: BasePage() {
                         Text(text = "账本列表", fontSize = 14.sp, modifier = Modifier
                             .padding(start = 25.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
                             .weight(1F))
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(5.dp))
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(5.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                val intent = Intent(ActivityManager.getCurActivity(), AccountSaveActivity::class.java)
+                                intent.putExtra("type", 1)
+                                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+                            })
                     }
                     LazyColumn(modifier = Modifier.padding(10.dp)) {
                         items(books) { book ->
