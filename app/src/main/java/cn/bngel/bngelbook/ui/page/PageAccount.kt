@@ -116,9 +116,9 @@ object PageAccount: BasePage() {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                val intent = Intent(ActivityManager.getCurActivity(), AccountSaveActivity::class.java)
-                                intent.putExtra("type", 0)
-                                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+                                ActivityManager.launch<AccountSaveActivity> {
+                                    putExtra("type", 0)
+                                }
                             })
                     }
                     LazyColumn(modifier = Modifier.padding(10.dp)) {
@@ -172,9 +172,9 @@ object PageAccount: BasePage() {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                val intent = Intent(ActivityManager.getCurActivity(), AccountSaveActivity::class.java)
-                                intent.putExtra("type", 1)
-                                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+                                ActivityManager.launch<AccountSaveActivity> {
+                                    putExtra("type", 1)
+                                }
                             })
                     }
                     LazyColumn(modifier = Modifier.padding(10.dp)) {

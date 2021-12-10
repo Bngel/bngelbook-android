@@ -2,7 +2,9 @@ package cn.bngel.bngelbook.activity
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.os.PersistableBundle
 import android.util.AttributeSet
 import android.util.Log
@@ -31,5 +33,15 @@ abstract class BaseActivity: ComponentActivity() {
 
     protected open fun event(result: ActivityResult) {
 
+    }
+
+    inline fun <reified T: BaseActivity> launch(block: Intent.() -> Unit) {
+        launcher.launch(Intent(this, T::class.java).apply {
+            block()
+        })
+    }
+
+    inline fun <reified T: BaseActivity> launch() {
+        launcher.launch(Intent(this, T::class.java))
     }
 }
