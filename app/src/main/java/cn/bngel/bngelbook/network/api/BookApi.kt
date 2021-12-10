@@ -13,27 +13,22 @@ object BookApi: BaseApi() {
     }
 
     fun postBook(book: Book, event: ((CommonResult<Boolean>?) -> Unit)? = null){
-        if (!NetworkUtils.isNetworkConnected()) return
         bookService.saveBook(book).enqueue(basicCallback(event))
     }
 
     fun deleteBookById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null){
-        if (!NetworkUtils.isNetworkConnected()) return
         bookService.deleteBookById(id).enqueue(basicCallback(event))
     }
 
     fun updateBookById(book: Book, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         bookService.updateBookById(book).enqueue(basicCallback(event))
     }
 
     fun getBookById(id: Long, event: ((CommonResult<Book>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         bookService.getBookById(id).enqueue(basicCallback(event))
     }
 
     fun getBooksByUserId(userId: Long, event: ((CommonResult<List<Book>>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         bookService.getBooksByUserId(userId).enqueue(basicCallback(event))
     }
 }

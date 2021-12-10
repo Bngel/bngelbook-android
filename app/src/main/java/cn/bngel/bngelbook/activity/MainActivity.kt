@@ -2,6 +2,7 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
@@ -254,7 +255,8 @@ class MainActivity : BaseActivity() {
 
     private fun autoLogin() {
         getSharedPreferences("loginState", MODE_PRIVATE).apply {
-            if (getBoolean("state", false)) {
+            val state = getBoolean("state", false)
+            if (state) {
                 val account = getString("account", "")?:""
                 val password = getString("password", "")?:""
                 UserApi.postUserLogin(account, password) { result ->

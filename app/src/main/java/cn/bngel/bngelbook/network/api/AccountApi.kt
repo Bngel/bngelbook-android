@@ -13,22 +13,18 @@ object AccountApi: BaseApi() {
     }
 
     fun postAccount(account: Account, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         accountService.postAccount(account).enqueue(basicCallback(event))
     }
 
     fun deleteAccountById(id: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         accountService.deleteAccountById(id).enqueue(basicCallback(event))
     }
 
     fun updateAccountById(account: Account, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         accountService.updateAccountById(account).enqueue(basicCallback(event))
     }
 
     fun getAccountById(id: Long, event: ((CommonResult<Account>?) -> Unit)? = null) {
-        if (!NetworkUtils.isNetworkConnected()) return
         accountService.getAccountById(id).enqueue(basicCallback(event))
     }
 
