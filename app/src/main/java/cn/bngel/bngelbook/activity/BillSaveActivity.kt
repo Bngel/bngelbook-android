@@ -64,9 +64,9 @@ class BillSaveActivity : BaseActivity() {
         Column {
             BillSaveTitle()
             BillBalanceRow()
-            BillTypeChoices(types = listOf("吃喝","交通","服饰","日用品","娱乐","医疗","其他"),size = 5,
+            BillTypeChoices(types = GlobalVariables.getDefaultTypes(),size = 5,
                 modifier = Modifier.weight(1F))
-            TagsRow(tags = listOf("早餐","午餐","晚餐","超市"))
+            TagsRow(tags = GlobalVariables.getTagsByType(curType.value))
             BottomRow()
             Calculator()
         }
