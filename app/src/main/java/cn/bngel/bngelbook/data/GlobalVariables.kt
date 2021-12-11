@@ -1,11 +1,12 @@
 package cn.bngel.bngelbook.data
 
+import androidx.compose.runtime.mutableStateOf
 import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.data.bean.User
 
 object GlobalVariables {
 
-    var USER: User? = null
+    var USER = mutableStateOf<User?>(null)
     var BOOK: Book? = null
 
     private val tagsMap = mapOf(

@@ -41,9 +41,10 @@ import kotlinx.coroutines.launch
 
 class MainActivity : BaseActivity() {
 
-    private val loginState = mutableStateOf(GlobalVariables.USER != null)
+    private val loginState = mutableStateOf(GlobalVariables.USER.value != null)
     private val pageState = mutableStateOf(MainPages.DEFAULT_PAGE)
     private val userDays = mutableStateOf(0)
+    private val resUpdate = mutableStateOf(false)
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
 
@@ -55,7 +56,7 @@ class MainActivity : BaseActivity() {
                 loginState.value = data.getBooleanExtra("loginState", false)
                 if (loginState.value) {
                     val user = data.getSerializableExtra("userInfo") as User
-                    GlobalVariables.USER = user
+                    GlobalVariables.USER.value = user
                     setPage(MainPages.HOME_PAGE)
                     initUserDays()
                 }
@@ -64,6 +65,7 @@ class MainActivity : BaseActivity() {
             if (updateRequired) {
                 PageManager.updateAllPage()
             }
+            resUpdate.value = true
         }
     }
 
@@ -84,6 +86,8 @@ class MainActivity : BaseActivity() {
     private fun MainPage() {
         scaffoldState = rememberScaffoldState()
         scope = rememberCoroutineScope()
+        if (resUpdate.value)
+            resUpdate.value = false
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {
@@ -121,9 +125,9 @@ class MainActivity : BaseActivity() {
 
     @Composable
     private fun Drawer() {
-        if (loginState.value) {
-            Column {
-                Drawer_ProfileCard(profile = "", username = GlobalVariables.USER?.username?:"")
+        Column {
+            Drawer_ProfileCard()
+            if (loginState.value) {
                 Column(modifier = Modifier.weight(1f)) {
                     Drawer_Function(imageVector = Icons.Filled.Home, functionName = "Home") {
                         setPage(MainPages.HOME_PAGE)
@@ -158,15 +162,10 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
-        else {
-            Column {
-                Drawer_ProfileCard(profile = "", username = "点击登录")
-            }
-        }
     }
 
     @Composable
-    private fun Drawer_ProfileCard(profile: String = "", username: String = "") {
+    private fun Drawer_ProfileCard() {
         val scaffoldState = rememberScaffoldState()
         val scope = rememberCoroutineScope()
         Row(modifier = Modifier
@@ -185,12 +184,12 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         if (loginState.value) {
-                            val intent = Intent(ActivityManager.getCurActivity(), UserDetailActivity::class.java)
-                            intent.putExtra("user", GlobalVariables.USER)
-                            launcher.launch(intent)
+                            ActivityManager.launch<UserDetailActivity> {
+                                putExtra("user", GlobalVariables.USER.value)
+                            }
                         } else {
                             scope.launch { scaffoldState.drawerState.close() }
-                            launcher.launch(Intent(this@MainActivity, LoginActivity::class.java))
+                            ActivityManager.launch<LoginActivity>()
                         }
                     }
             ) {
@@ -207,7 +206,7 @@ class MainActivity : BaseActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(5f)
                 ) {
-                    Text(text = username)
+                    Text(text = GlobalVariables.USER.value?.username?:"")
                     Text(text = "已记账: ${userDays.value} 天")
                 }
             }
@@ -247,7 +246,7 @@ class MainActivity : BaseActivity() {
 
     private fun initUserDays() {
         if (loginState.value) {
-            UserApi.getUserRegisterDays(GlobalVariables.USER?.id?:0L) { day ->
+            UserApi.getUserRegisterDays(GlobalVariables.USER.value?.id?:0L) { day ->
                 userDays.value = day?.data?:0
             }
         }
@@ -263,7 +262,7 @@ class MainActivity : BaseActivity() {
                     if (result != null) {
                         when (result.code) {
                             CommonResult.SUCCESS_CODE -> {
-                                GlobalVariables.USER = result.data
+                                GlobalVariables.USER.value = result.data
                                 loginState.value = true
                                 setPage(MainPages.HOME_PAGE)
                                 initUserDays()

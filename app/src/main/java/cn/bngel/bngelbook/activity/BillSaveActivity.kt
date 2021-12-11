@@ -423,20 +423,21 @@ class BillSaveActivity : BaseActivity() {
     }
 
     private fun getUserAccounts() {
-        val user = GlobalVariables.USER
-        if (user?.id != null) {
-            val userId = user.id
-            AccountApi.getAccountsByUserId(userId) { result ->
-                loading.value = false
-                if (result?.data != null) {
-                    accountList.clear()
-                    accountList.addAll(result.data)
+        GlobalVariables.USER.value?.apply {
+            val userId = id
+            if (userId != null) {
+                AccountApi.getAccountsByUserId(userId) { result ->
+                    loading.value = false
+                    if (result?.data != null) {
+                        accountList.clear()
+                        accountList.addAll(result.data)
+                    }
                 }
             }
-        }
-        else {
-            loading.value = false
-            Toast.makeText(this@BillSaveActivity, "请先登录", Toast.LENGTH_SHORT).show()
+            else {
+                loading.value = false
+                Toast.makeText(this@BillSaveActivity, "请先登录", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

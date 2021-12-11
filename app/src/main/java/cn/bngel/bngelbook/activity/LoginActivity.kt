@@ -142,8 +142,7 @@ class LoginActivity : BaseActivity() {
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         ) {
-                            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
-                            launcher.launch(intent)
+                            ActivityManager.launch<RegisterActivity>()
                         })
                     Text(text = "找回密码", textAlign = TextAlign.End, fontSize = 13.sp,
                         modifier = Modifier.weight(1F))

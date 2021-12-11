@@ -79,9 +79,9 @@ object PageFriend: BasePage() {
             interactionSource = remember { MutableInteractionSource() },
             indication = null
         ) {
-            val intent = Intent(ActivityManager.getCurActivity(), UserDetailActivity::class.java)
-            intent.putExtra("user", user)
-            ActivityManager.getCurActivity()?.launcher?.launch(intent)
+            ActivityManager.launch<UserDetailActivity> {
+                putExtra("user", user)
+            }
         }, verticalAlignment = Alignment.CenterVertically) {
             Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
                 modifier = Modifier.padding(20.dp))
@@ -91,7 +91,7 @@ object PageFriend: BasePage() {
 
     private fun initFriends() {
         loading.value = true
-        val userId = GlobalVariables.USER?.id
+        val userId = GlobalVariables.USER.value?.id
         if (userId != null) {
             UserApi.getFriendsById(userId) { result ->
                 if (result?.data != null) {

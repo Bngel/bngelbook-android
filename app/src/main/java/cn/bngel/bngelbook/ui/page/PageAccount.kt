@@ -89,7 +89,7 @@ object PageAccount: BasePage() {
     @Composable
     private fun AccountCard() {
         if (getUpdate()) {
-            AccountApi.getAccountsByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
+            AccountApi.getAccountsByUserId(GlobalVariables.USER.value?.id ?: 0L) { result ->
                 if (result?.data != null) {
                     accounts.clear()
                     accounts.addAll(result.data)
@@ -149,7 +149,7 @@ object PageAccount: BasePage() {
     @Composable
     private fun BookCard() {
         if (getUpdate()) {
-            BookApi.getBooksByUserId(GlobalVariables.USER?.id ?: 0L) { result ->
+            BookApi.getBooksByUserId(GlobalVariables.USER.value?.id ?: 0L) { result ->
                 if (result?.data != null) {
                     books.clear()
                     books.addAll(result.data)

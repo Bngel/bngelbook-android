@@ -139,10 +139,9 @@ object PageHome: BasePage() {
             .fillMaxWidth()
             .padding(top = 5.dp)
             .clickable {
-                val intent =
-                    Intent(ActivityManager.getCurActivity(), BillDetailActivity::class.java)
-                intent.putExtra("bill", bill)
-                ActivityManager.getCurActivity()?.launcher?.launch(intent)
+                ActivityManager.launch<BillDetailActivity> {
+                    putExtra("bill", bill)
+                }
             }) {
             Image(painter = painterResource(id = R.drawable.default_profile),
                 contentDescription = "bill type",
@@ -264,12 +263,15 @@ object PageHome: BasePage() {
     }
 
     private fun getUserBooks() {
-        val user = GlobalVariables.USER
-        if (user?.id != null) {
-            BookApi.getBooksByUserId(user.id) { books ->
-                if (books?.data != null) {
-                    bookList.clear()
-                    bookList.addAll(books.data)
+        val user = GlobalVariables.USER.value
+        user?.apply{
+            val userId = id
+            if (userId != null) {
+                BookApi.getBooksByUserId(userId) { books ->
+                    if (books?.data != null) {
+                        bookList.clear()
+                        bookList.addAll(books.data)
+                    }
                 }
             }
         }

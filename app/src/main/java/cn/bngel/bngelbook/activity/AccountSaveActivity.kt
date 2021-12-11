@@ -203,7 +203,7 @@ class AccountSaveActivity : BaseActivity() {
                     Account(
                         null,
                         accountName.value,
-                        GlobalVariables.USER?.id,
+                        GlobalVariables.USER.value?.id,
                         accountBalance.value.toDouble()
                     )
                 ) { result ->
@@ -232,7 +232,7 @@ class AccountSaveActivity : BaseActivity() {
                 Book(
                     null,
                     bookName.value,
-                    GlobalVariables.USER?.id,
+                    GlobalVariables.USER.value?.id,
                     bookType.value
                 )
             ) { result ->

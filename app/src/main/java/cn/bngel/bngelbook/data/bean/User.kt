@@ -3,13 +3,13 @@ package cn.bngel.bngelbook.data.bean
 import java.io.Serializable
 
 data class User(
-    val id: Long?,
-    val birthday: String?,
-    val email: String?,
-    val gender: Int?,
-    val password: String?,
-    val phone: String?,
-    val profile: String?,
-    val registerDate: String?,
-    val username: String?
+    var id: Long? = null,
+    var birthday: String? = null,
+    var email: String? = null,
+    var gender: Int? = null,
+    var password: String? = null,
+    var phone: String? = null,
+    var profile: String? = null,
+    var registerDate: String? = null,
+    var username: String? = null
 ): Serializable

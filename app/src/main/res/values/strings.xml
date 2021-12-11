@@ -3,4 +3,5 @@
     <string name="title_activity_bill_detail">BillDetailActivity</string>
     <string name="title_activity_user_detail">UserDetailActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_user_info_update">UserInfoUpdateActivity</string>
 </resources>
