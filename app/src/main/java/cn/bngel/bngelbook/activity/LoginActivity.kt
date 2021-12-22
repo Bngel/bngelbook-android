@@ -26,6 +26,11 @@ import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 
 class LoginActivity : BaseActivity() {
 
+    private val WAY_SMS = 0
+    private val WAY_PASSWORD = 1
+    private val loginWay = mutableStateOf(WAY_SMS)
+    private val loading = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,9 +44,6 @@ class LoginActivity : BaseActivity() {
 
     @Composable
     private fun LoginPage() {
-        val loading = remember {
-            mutableStateOf(false)
-        }
         if (loading.value)
             Dialog_Loading{loading.value = false}
         Box(contentAlignment = Alignment.Center, modifier = Modifier
@@ -66,88 +68,135 @@ class LoginActivity : BaseActivity() {
                 Text(text = "Welcome", fontSize = 22.sp, modifier = Modifier
                     .padding(top = 10.dp, bottom = 30.dp)
                     .align(Alignment.CenterHorizontally))
-                var userAccount by remember {
-                    mutableStateOf("")
+                when (loginWay.value) {
+                    WAY_PASSWORD -> LoginPasswordWay()
+                    WAY_SMS -> LoginSmsWay()
                 }
-                var userPassword by remember {
-                    mutableStateOf("")
-                }
-                TextField(modifier = Modifier.padding(10.dp),
-                    value = userAccount,
-                    label = { Text(text = "Account", fontSize = 12.sp) } ,
-                    singleLine = true,
-                    placeholder = { Text(text = "请输入手机号/邮箱", fontSize = 16.sp) },
-                    onValueChange = {
-                        userAccount = it
+            }
+        }
+    }
+
+    @Composable
+    private fun LoginSmsWay() {
+        var userPhone by remember {
+            mutableStateOf("")
+        }
+        TextField(modifier = Modifier.padding(10.dp),
+            value = userPhone,
+            label = { Text(text = "Tel", fontSize = 12.sp) } ,
+            singleLine = true,
+            placeholder = { Text(text = "请输入手机号", fontSize = 16.sp) },
+            onValueChange = {
+                userPhone = it
+            })
+        Spacer(modifier = Modifier.height(30.dp))
+        Button(modifier = Modifier.padding(top = 20.dp),
+            colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF),
+                backgroundColor = Color(0xFF66CCFF)
+            ),
+            shape = RoundedCornerShape(10.dp),
+            onClick = {
+                loginWay.value = WAY_PASSWORD
+            }) {
+            Text(text = "获取验证码")
+        }
+        Row(modifier = Modifier.padding(10.dp)) {
+            Text(text = "密码登录", textAlign = TextAlign.Start, fontSize = 13.sp,
+                modifier = Modifier
+                    .weight(1F)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        loginWay.value = WAY_PASSWORD
                     })
-                TextField(modifier = Modifier.padding(10.dp),
-                    value = userPassword,
-                    label = { Text(text = "Password", fontSize = 12.sp) } ,
-                    singleLine = true,
-                    placeholder = { Text(text = "请输入密码", fontSize = 16.sp) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = {
-                        userPassword = it
-                    })
-                Button(modifier = Modifier.padding(top = 20.dp),
-                    colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF),
-                        backgroundColor = Color(0xFF66CCFF)
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    onClick = {
-                        loading.value = true
-                        val account = userAccount
-                        val password = userPassword
-                        UserApi.postUserLogin(account, password) { result ->
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            if (result != null) {
-                                when (result.code) {
-                                    200 -> {
-                                        intent.putExtra("loginState", true)
-                                        intent.putExtra("userInfo", result.data)
-                                        this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
-                                        getSharedPreferences("loginState", MODE_PRIVATE).edit {
-                                            putBoolean("state", true)
-                                            putString("account", account)
-                                            putString("password", password)
-                                        }
-                                        Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
-                                        finish()
-                                    }
-                                    400 -> {
-                                        intent.putExtra("loginState", false)
-                                        this@LoginActivity.setResult(RESULT_OK, intent)
-                                        Toast.makeText(this@LoginActivity, "用户名或密码错误", Toast.LENGTH_SHORT).show()
-                                    }
-                                    else -> {
-                                        intent.putExtra("loginState", false)
-                                        this@LoginActivity.setResult(RESULT_OK, intent)
-                                        Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
-                                    }
+        }
+    }
+
+    @Composable
+    private fun LoginPasswordWay(){
+        var userAccount by remember {
+            mutableStateOf("")
+        }
+        var userPassword by remember {
+            mutableStateOf("")
+        }
+        TextField(modifier = Modifier.padding(10.dp),
+            value = userAccount,
+            label = { Text(text = "Account", fontSize = 12.sp) } ,
+            singleLine = true,
+            placeholder = { Text(text = "请输入手机号", fontSize = 16.sp) },
+            onValueChange = {
+                userAccount = it
+            })
+        TextField(modifier = Modifier.padding(10.dp),
+            value = userPassword,
+            label = { Text(text = "Password", fontSize = 12.sp) } ,
+            singleLine = true,
+            placeholder = { Text(text = "请输入密码", fontSize = 16.sp) },
+            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = {
+                userPassword = it
+            })
+        Button(modifier = Modifier.padding(top = 20.dp),
+            colors = ButtonDefaults.buttonColors(contentColor = Color(0xFFFFFFFF),
+                backgroundColor = Color(0xFF66CCFF)
+            ),
+            shape = RoundedCornerShape(10.dp),
+            onClick = {
+                loading.value = true
+                val account = userAccount
+                val password = userPassword
+                UserApi.postUserLogin(account, password) { result ->
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    if (result != null) {
+                        when (result.code) {
+                            200 -> {
+                                intent.putExtra("loginState", true)
+                                intent.putExtra("userInfo", result.data)
+                                this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
+                                getSharedPreferences("loginState", MODE_PRIVATE).edit {
+                                    putBoolean("state", true)
+                                    putString("account", account)
+                                    putString("password", password)
                                 }
+                                Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
+                                finish()
                             }
-                            else {
+                            400 -> {
+                                intent.putExtra("loginState", false)
+                                this@LoginActivity.setResult(RESULT_OK, intent)
+                                Toast.makeText(this@LoginActivity, "用户名或密码错误", Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
                                 intent.putExtra("loginState", false)
                                 this@LoginActivity.setResult(RESULT_OK, intent)
                                 Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
                             }
-                            loading.value = false
                         }
-                    }) {
-                    Text(text = "登录")
+                    }
+                    else {
+                        intent.putExtra("loginState", false)
+                        this@LoginActivity.setResult(RESULT_OK, intent)
+                        Toast.makeText(this@LoginActivity, "网络状态异常, 请稍后再试", Toast.LENGTH_SHORT).show()
+                    }
+                    loading.value = false
                 }
-                Row(modifier = Modifier.padding(10.dp)) {
-                    Text(text = "注册账号", textAlign = TextAlign.Start, fontSize = 13.sp,
-                        modifier = Modifier.weight(1F).clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            ActivityManager.launch<RegisterActivity>()
-                        })
-                    Text(text = "找回密码", textAlign = TextAlign.End, fontSize = 13.sp,
-                        modifier = Modifier.weight(1F))
-                }
-            }
+            }) {
+            Text(text = "登录")
+        }
+        Row(modifier = Modifier.padding(10.dp)) {
+            Text(text = "验证码登录", textAlign = TextAlign.Start, fontSize = 13.sp,
+                modifier = Modifier
+                    .weight(1F)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        loginWay.value = WAY_SMS
+                    })
+            Text(text = "找回密码", textAlign = TextAlign.End, fontSize = 13.sp,
+                modifier = Modifier.weight(1F))
         }
     }
 

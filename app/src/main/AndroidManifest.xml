@@ -19,11 +19,6 @@
             android:label="@string/title_activity_user_info_update"
             android:theme="@style/Theme.Bngelbook.NoActionBar" />
         <activity
-            android:name=".activity.RegisterActivity"
-            android:exported="true"
-            android:label="@string/title_activity_register"
-            android:theme="@style/Theme.Bngelbook.NoActionBar" />
-        <activity
             android:name=".activity.UserDetailActivity"
             android:exported="true"
             android:label="@string/title_activity_user_detail"
