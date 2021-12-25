@@ -103,4 +103,5 @@ object PageFriend: BasePage() {
             }
         }
     }
+
 }

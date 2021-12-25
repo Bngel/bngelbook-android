@@ -49,4 +49,12 @@ object UserApi: BaseApi() {
         userService.getUsersByUsername(username).enqueue(basicCallback(event))
     }
 
+    fun postUserLoginSms(phone: String, area: String = "+86", event: ((CommonResult<String>?) -> Unit)? = null) {
+        userService.postUserLoginSms(area, phone).enqueue(basicCallback(event))
+    }
+
+    fun postUserLoginCheck(phone: String, code: String, event: ((CommonResult<User>?) -> Unit)? = null) {
+        userService.postUserLoginCheck(code, phone).enqueue(basicCallback(event))
+    }
+
 }

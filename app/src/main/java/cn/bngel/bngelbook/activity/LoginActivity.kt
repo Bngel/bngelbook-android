@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key.Companion.Sleep
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +31,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import cn.bngel.bngelbook.data.CommonResult
+import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.network.api.UserApi
+import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 import kotlinx.coroutines.delay
@@ -42,7 +47,7 @@ class LoginActivity : BaseActivity() {
     private val WAY_VERIFICATION = 2
     private val loginWay = mutableStateOf(WAY_SMS)
     private val loading = mutableStateOf(false)
-    private var userPhone = ""
+    private var userPhone = mutableStateOf("")
     private val SMS_CLOCK = 60
     private val smsClock = mutableStateOf(0)
 
@@ -100,7 +105,21 @@ class LoginActivity : BaseActivity() {
 
     @Composable
     private fun VerificationWay() {
-        VerificationCodeField(digits = 4) { text,focused ->
+        VerificationCodeField(digits = 4, inputCallback = { code ->
+            UserApi.postUserLoginCheck(userPhone.value, code) { result ->
+                loading.value = true
+                if (result?.code == CommonResult.SUCCESS_CODE && result.data != null) {
+                    PageManager.updateAllPage()
+                    loading.value = false
+                    Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    intent.putExtra("loginState", true)
+                    intent.putExtra("userInfo", result.data)
+                    setResult(RESULT_FIRST_USER, intent)
+                    finish()
+                }
+            }
+        }) { text,focused ->
             SimpleVerificationCodeItem(text = text, focused = focused)
         }
     }
@@ -108,15 +127,18 @@ class LoginActivity : BaseActivity() {
     @Composable
     private fun LoginSmsWay() {
         TextField(modifier = Modifier.padding(10.dp),
-            value = userPhone,
+            value = userPhone.value,
             label = { Text(text = "Tel", fontSize = 12.sp) },
             singleLine = true,
             placeholder = { Text(text = "请输入手机号", fontSize = 16.sp) },
             onValueChange = {
-                userPhone = it
-            })
+                if (it.length <= 11)
+                    userPhone.value = it
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+        )
         Spacer(modifier = Modifier.height(30.dp))
-        Button(enabled = smsClock.value == 0,
+        Button(enabled = smsClock.value == 0 && userPhone.value.length == 11,
             modifier = Modifier.padding(top = 20.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color(0xFFFFFFFF),
@@ -130,6 +152,10 @@ class LoginActivity : BaseActivity() {
                         smsClock.value -= 1
                         Thread.sleep(1000)
                     }
+                }
+                UserApi.postUserLoginSms(userPhone.value) {
+                    if (it?.code == CommonResult.SUCCESS_CODE)
+                        Toast.makeText(this@LoginActivity, "验证码已发送", Toast.LENGTH_SHORT).show()
                 }
                 loginWay.value = WAY_VERIFICATION
             }) {
@@ -163,7 +189,9 @@ class LoginActivity : BaseActivity() {
             placeholder = { Text(text = "请输入手机号", fontSize = 16.sp) },
             onValueChange = {
                 userAccount = it
-            })
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+        )
         TextField(modifier = Modifier.padding(10.dp),
             value = userPassword,
             label = { Text(text = "Password", fontSize = 12.sp) },
@@ -244,11 +272,6 @@ class LoginActivity : BaseActivity() {
         }
     }
 
-
-    /**
-     * @param text 文本内容
-     * @param focused 是否高亮当前输入框
-     */
     @Composable
     fun SimpleVerificationCodeItem(text: String, focused: Boolean) {
         val borderColor = if (focused) Color.Gray else Color(0xeeeeeeee)
@@ -266,7 +289,6 @@ class LoginActivity : BaseActivity() {
         }
 
     }
-
 
     @Composable
     fun VerificationCodeField(
@@ -289,7 +311,6 @@ class LoginActivity : BaseActivity() {
                     val focused = it == content.length
                     itemScope(text, focused)
                 }
-
             }
             BasicTextField(
                 value = content, onValueChange = {
@@ -299,7 +320,8 @@ class LoginActivity : BaseActivity() {
                         inputCallback(it)
                 }, modifier = Modifier
                     .drawWithContent {}
-                    .matchParentSize()
+                    .matchParentSize(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
     }

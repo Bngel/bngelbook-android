@@ -44,7 +44,7 @@ object PageHome: BasePage() {
     private val curBalance = mutableStateOf(0.0)
     private val curCost = mutableStateOf(0.0)
     private val curIncome = mutableStateOf(0.0)
-    private val curBookId = mutableStateOf(4L)
+    private val curBookId = mutableStateOf<Long?>(null)
     private val curBook = mutableStateOf(GlobalVariables.BOOK)
     private val curMonth = mutableStateOf(Calendar.getInstance().get(Calendar.MONTH) + 1)
     private val curBookName = mutableStateOf("")
@@ -69,32 +69,28 @@ object PageHome: BasePage() {
 
     @Composable
     private fun HomeOverview() {
+        getUserBooks()
         getCurBook()
         Column(horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color(0xFF66CCFF))) {
-            if (curBook.value != null) {
-                Row(modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(top = 15.dp)
-                    .clickable {
-                        bookSelected.value = true
-                    }
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp))) {
-                    Text(
-                        text = curBook.value?.name ?: "", modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = Color.Black,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
-                    )
+            Row(modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 15.dp)
+                .clickable {
+                    bookSelected.value = true
                 }
-            }
-            else {
-                Spacer(modifier = Modifier.height(15.dp))
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp))) {
+                Text(
+                    text = curBook.value?.name ?: "未选择账本", modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp)
+                )
             }
             Row{
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -161,38 +157,38 @@ object PageHome: BasePage() {
     }
 
     private fun updateBills() {
-        loadingBills.value = true
-        BillApi.getMonthBillsByBookId(curBookId.value, curMonth.value) { bills ->
-            if (bills != null) {
-                if (bills.data != null) {
-                    billList.clear()
-                    val data = bills.data
-                    var totalIncome = 0.0
-                    var totalCost = 0.0
-                    for (bill in data) {
-                        if (bill.balance != null) {
-                            if (bill.io == 1) {
-                                totalIncome += bill.balance
-                            }
-                            else {
-                                totalCost += bill.balance
+        if (curBookId.value != null) {
+            loadingBills.value = true
+            BillApi.getMonthBillsByBookId(curBookId.value!!, curMonth.value) { bills ->
+                if (bills != null) {
+                    if (bills.data != null) {
+                        billList.clear()
+                        val data = bills.data
+                        var totalIncome = 0.0
+                        var totalCost = 0.0
+                        for (bill in data) {
+                            if (bill.balance != null) {
+                                if (bill.io == 1) {
+                                    totalIncome += bill.balance
+                                } else {
+                                    totalCost += bill.balance
+                                }
                             }
                         }
+                        curIncome.value = totalIncome
+                        curCost.value = totalCost
+                        curBalance.value = totalIncome - totalCost
+                        billList.addAll(data)
+                        setUpdate(false)
                     }
-                    curIncome.value = totalIncome
-                    curCost.value = totalCost
-                    curBalance.value = totalIncome - totalCost
-                    billList.addAll(data)
-                    setUpdate(false)
+                    loadingBills.value = false
                 }
-                loadingBills.value = false
             }
         }
     }
 
     @Composable
     private fun BooksDialog() {
-        getUserBooks()
         val selectedBook = remember {
             mutableStateOf("")
         }
@@ -254,10 +250,12 @@ object PageHome: BasePage() {
     }
 
     private fun getCurBook() {
-        BookApi.getBookById(curBookId.value) { book ->
-            if (book?.data != null) {
-                curBook.value = book.data
-                GlobalVariables.BOOK = book.data
+        if (curBookId.value != null) {
+            BookApi.getBookById(curBookId.value!!) { book ->
+                if (book?.data != null) {
+                    curBook.value = book.data
+                    GlobalVariables.BOOK = book.data
+                }
             }
         }
     }
@@ -268,12 +266,14 @@ object PageHome: BasePage() {
             val userId = id
             if (userId != null) {
                 BookApi.getBooksByUserId(userId) { books ->
-                    if (books?.data != null) {
+                    if (books?.data != null && books.data.isNotEmpty()) {
                         bookList.clear()
                         bookList.addAll(books.data)
+                        curBookId.value = bookList[0].id
                     }
                 }
             }
         }
     }
+
 }

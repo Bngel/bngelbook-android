@@ -73,4 +73,26 @@ interface UserDao: BasicDao {
      */
     @GET("{username}")
     fun getUsersByUsername(@Path("username") username: String): Call<CommonResult<List<User>>>
+
+    /**
+     * User - 发送登录短信
+     */
+    @FormUrlEncoded
+    @POST("login/sms")
+    fun postUserLoginSms(
+        @Field("area") area: String,
+        @Field("phone") phone: String
+    ): Call<CommonResult<String>>
+
+    /**
+     * User - 验证码验证
+     */
+    @FormUrlEncoded
+    @POST("login/check")
+    fun postUserLoginCheck(
+        @Field("code") code: String,
+        @Field("phone") phone: String
+    ): Call<CommonResult<User>>
+
+
 }
