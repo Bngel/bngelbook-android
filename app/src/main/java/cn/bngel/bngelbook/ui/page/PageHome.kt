@@ -1,6 +1,7 @@
 package cn.bngel.bngelbook.ui.page
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,8 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Icon
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,6 +34,7 @@ import androidx.compose.ui.window.Dialog
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.activity.BillDetailActivity
+import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bill
@@ -189,62 +197,148 @@ object PageHome: BasePage() {
 
     @Composable
     private fun BooksDialog() {
-        val selectedBook = remember {
-            mutableStateOf("")
-        }
-        val selectedBookId = remember {
-            mutableStateOf(curBookId.value)
-        }
-        Dialog(onDismissRequest = {}) {
+        val selectedBook = remember { mutableStateOf("") }
+        val selectedBookId = remember { mutableStateOf(curBookId.value) }
+        val isCreatingBook = remember { mutableStateOf(false) }
+        val newBookName = remember { mutableStateOf("") }
+        val newBookType = remember { mutableStateOf("") }
+        Dialog(onDismissRequest = { bookSelected.value = false }) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(10.dp))
-                    .padding(top = 20.dp, bottom = 20.dp, start = 10.dp, end = 10.dp)
-                    .fillMaxWidth(0.8F)
+                    .padding(top = 20.dp, bottom = 20.dp)
+                    .fillMaxWidth(0.9F)
                     .fillMaxHeight(0.6F)
             ) {
-                LazyColumn(
-                    horizontalAlignment = Alignment.Start,
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(10.dp)
-                ) {
-                    if (bookList.size != 0) {
-                        items(bookList) { book ->
-                            if (book.name != null && book.id != null) {
-                                Row(modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)) {
-                                    RadioButton(selected = book.name == selectedBook.value,
-                                        onClick = {
-                                            selectedBook.value = book.name
-                                            selectedBookId.value = book.id
-                                        })
-                                    Text(
-                                        text = book.name,
-                                        fontSize = 18.sp,
-                                        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                                        maxLines = 1
-                                    )
+                if (isCreatingBook.value) {
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowLeft,
+                            contentDescription = "",
+                            modifier = Modifier.clickable{ isCreatingBook.value = false }
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally){
+                        Column(
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(text = "账本名称:", fontSize = 13.sp, modifier = Modifier.padding(10.dp))
+                            BasicTextField(
+                                value = newBookName.value,
+                                onValueChange = { newBookName.value = it },
+                                decorationBox = { innerTextField ->
+                                    Row(
+                                        Modifier
+                                            .border(
+                                                width = 1.dp, color = Color(0xFF66CCFF),
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .padding(10.dp)
+                                    ) {
+                                        innerTextField()
+                                    }
+                                }
+                            )
+                            Text(text = "账本类型:", fontSize = 13.sp, modifier = Modifier.padding(10.dp))
+                            BasicTextField(
+                                value = newBookType.value,
+                                onValueChange = { newBookType.value = it },
+                                decorationBox = { innerTextField ->
+                                    Row(
+                                        Modifier
+                                            .border(
+                                                width = 1.dp, color = Color(0xFF66CCFF),
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .padding(10.dp)
+                                    ) {
+                                        innerTextField()
+                                    }
+                                }
+                            )
+                        }
+                        Text(text = "确定",
+                            fontSize = 16.sp,
+                            color = Color(0xFF66CCFF),
+                            modifier = Modifier
+                                .background(shape = RoundedCornerShape(10.dp), color = Color.White)
+                                .padding(top = 15.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFF66CCFF),
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .clickable {
+                                    val newBook = Book(null, newBookName.value, GlobalVariables.USER.value?.id, newBookType.value)
+                                    BookApi.postBook(newBook) { result ->
+                                        if (result?.code == CommonResult.SUCCESS_CODE) {
+                                            getUserBooks()
+                                            PageManager.updateAllPage()
+                                            setUpdate(true)
+                                            Toast.makeText(ActivityManager.getCurActivity(), "创建成功", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    isCreatingBook.value = false
+                                    bookSelected.value = false
+                                }
+                                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 5.dp))
+                    }
+                }
+                else {
+                    LazyColumn(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .weight(1F)
+                    ) {
+                        if (bookList.size != 0) {
+                            items(bookList) { book ->
+                                if (book.name != null && book.id != null) {
+                                    Row(modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 5.dp, start = 40.dp)) {
+                                        RadioButton(selected = book.name == selectedBook.value,
+                                            onClick = {
+                                                selectedBook.value = book.name
+                                                selectedBookId.value = book.id
+                                            })
+                                        Text(
+                                            text = book.name,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+                                            maxLines = 1
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                Text(text = "确定", fontSize = 16.sp, color = Color(0xFF66CCFF), modifier = Modifier
-                    .background(shape = RoundedCornerShape(10.dp), color = Color.White)
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF66CCFF),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .clickable {
-                        bookSelected.value = false
-                        if (selectedBook.value != curBookName.value && selectedBook.value != "")
-                            setUpdate(true)
-                        curBookName.value = selectedBook.value
-                        curBookId.value = selectedBookId.value
+                    Row(modifier = Modifier.clickable {
+                        isCreatingBook.value = !isCreatingBook.value
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.AddCircle, contentDescription = "",
+                            modifier = Modifier.padding(10.dp)
+                        )
+                        Text(text = "新建账本", fontSize = 16.sp, modifier = Modifier.padding(10.dp))
                     }
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp))
+                    Text(text = "确定", fontSize = 16.sp, color = Color(0xFF66CCFF), modifier = Modifier
+                        .background(shape = RoundedCornerShape(10.dp), color = Color.White)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF66CCFF),
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .clickable {
+                            bookSelected.value = false
+                            if (selectedBook.value != curBookName.value && selectedBook.value != "")
+                                setUpdate(true)
+                            curBookName.value = selectedBook.value
+                            curBookId.value = selectedBookId.value
+                        }
+                        .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 5.dp))
+                }
             }
         }
     }

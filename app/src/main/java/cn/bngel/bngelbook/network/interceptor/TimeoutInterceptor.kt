@@ -32,7 +32,7 @@ class TimeoutInterceptor: Interceptor {
             response = chain.proceed(request)
             val repJson = response.peekBody(Long.MAX_VALUE).string()
             val repBody = JsonParser.parseString(repJson).asJsonObject
-            val repCode = repBody.get("code").asInt
+            val repCode = repBody.get("code")?.asInt
             if (repCode == 200)
                 break
             retryTimes += 1
