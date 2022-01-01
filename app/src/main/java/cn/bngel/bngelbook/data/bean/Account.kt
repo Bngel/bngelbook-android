@@ -14,4 +14,4 @@ data class Account(
     val name: String?,
     val userId: Long?,
     val balance: Double?
-): Serializable
+): Serializable, Bean()

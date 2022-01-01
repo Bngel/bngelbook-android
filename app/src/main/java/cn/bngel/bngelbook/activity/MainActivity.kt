@@ -31,17 +31,20 @@ import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
+import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.ObjectInputStream
+import java.time.LocalDate
 
 
 class MainActivity : BaseActivity() {
 
-    private val loginState = mutableStateOf(GlobalVariables.USER.value != null)
+    private val loginState = mutableStateOf(GlobalVariables.USER != null)
     private val pageState = mutableStateOf(MainPages.DEFAULT_PAGE)
     private val userDays = mutableStateOf(0)
     private val resUpdate = mutableStateOf(false)
@@ -56,9 +59,10 @@ class MainActivity : BaseActivity() {
                 loginState.value = data.getBooleanExtra("loginState", false)
                 if (loginState.value) {
                     val user = data.getSerializableExtra("userInfo") as User
-                    GlobalVariables.USER.value = user
+                    GlobalVariables.USER = user
                     setPage(MainPages.HOME_PAGE)
-                    initUserDays()
+                    userDays.value =
+                        (LocalDate.now().toEpochDay() - LocalDate.parse(user.registerDate).toEpochDay()).toInt()
                 }
             }
             val updateRequired = data.getBooleanExtra("updateState", false)
@@ -148,10 +152,8 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         loginState.value = false
-                        this@MainActivity.getSharedPreferences("loginState", MODE_PRIVATE).edit().apply {
-                            putBoolean("state", false)
-                            putString("account","")
-                            putString("password","")
+                        this@MainActivity.getSharedPreferences("localData", MODE_PRIVATE).edit().apply {
+                            putString("user", null)
                             apply()
                         }
                         setPage(MainPages.DEFAULT_PAGE)
@@ -185,7 +187,7 @@ class MainActivity : BaseActivity() {
                     ) {
                         if (loginState.value) {
                             ActivityManager.launch<UserDetailActivity> {
-                                putExtra("user", GlobalVariables.USER.value)
+                                putExtra("user", GlobalVariables.USER)
                             }
                         } else {
                             scope.launch { scaffoldState.drawerState.close() }
@@ -206,7 +208,7 @@ class MainActivity : BaseActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.weight(5f)
                 ) {
-                    Text(text = GlobalVariables.USER.value?.username?:"")
+                    Text(text = GlobalVariables.USER?.username?:"")
                     Text(text = "已记账: ${userDays.value} 天")
                 }
             }
@@ -244,40 +246,18 @@ class MainActivity : BaseActivity() {
         autoLogin()
     }
 
-    private fun initUserDays() {
-        if (loginState.value) {
-            UserApi.getUserRegisterDays(GlobalVariables.USER.value?.id?:0L) { day ->
-                userDays.value = day?.data?:0
-            }
-        }
-    }
-
     private fun autoLogin() {
-        getSharedPreferences("loginState", MODE_PRIVATE).apply {
-            val state = getBoolean("state", false)
-            if (state) {
-                val account = getString("account", "")?:""
-                val password = getString("password", "")?:""
-                UserApi.postUserLogin(account, password) { result ->
-                    if (result != null) {
-                        when (result.code) {
-                            CommonResult.SUCCESS_CODE -> {
-                                GlobalVariables.USER.value = result.data
-                                loginState.value = true
-                                setPage(MainPages.HOME_PAGE)
-                                initUserDays()
-                            }
-                            else -> {
-                                edit{
-                                    putBoolean("state", false)
-                                }
-                            }
-                        }
-                    }
-                }
+        getSharedPreferences("localData", MODE_PRIVATE).apply {
+            val userBase64 = getString("user","")
+            if (userBase64 != null && userBase64 != "") {
+                val user = Bean.fromCustomBase64<User>(userBase64)
+                GlobalVariables.USER = user
+                userDays.value =
+                    (LocalDate.now().toEpochDay() - LocalDate.parse(user.registerDate).toEpochDay()).toInt()
+                loginState.value = true
+                pageState.value = MainPages.HOME_PAGE
             }
         }
-
     }
 
     private fun setPage(page: MainPages) {

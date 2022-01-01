@@ -273,7 +273,7 @@ object PageHome: BasePage() {
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
-                                    val newBook = Book(null, newBookName.value, GlobalVariables.USER.value?.id, newBookType.value)
+                                    val newBook = Book(null, newBookName.value, GlobalVariables.USER?.id, newBookType.value)
                                     BookApi.postBook(newBook) { result ->
                                         if (result?.code == CommonResult.SUCCESS_CODE) {
                                             getUserBooks()
@@ -355,7 +355,7 @@ object PageHome: BasePage() {
     }
 
     private fun getUserBooks() {
-        val user = GlobalVariables.USER.value
+        val user = GlobalVariables.USER
         user?.apply{
             val userId = id
             if (userId != null) {

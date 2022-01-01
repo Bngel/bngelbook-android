@@ -6,7 +6,7 @@ import cn.bngel.bngelbook.data.bean.User
 
 object GlobalVariables {
 
-    var USER = mutableStateOf<User?>(null)
+    var USER: User? = null
     var BOOK: Book? = null
 
     private val tagsMap = mapOf(

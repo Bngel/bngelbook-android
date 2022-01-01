@@ -22,7 +22,7 @@ object FriendApi: BaseApi() {
     }
 
     fun postFriendByUserId(userId: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        GlobalVariables.USER.value?.apply {
+        GlobalVariables.USER?.apply {
             friendService.addFriend(Friend(null, id, userId)).enqueue(basicCallback(event))
         }
     }
@@ -36,7 +36,7 @@ object FriendApi: BaseApi() {
     }
 
     fun deleteFriendByUserId(userId: Long, event: ((CommonResult<Boolean>?) -> Unit)? = null) {
-        GlobalVariables.USER.value?.apply {
+        GlobalVariables.USER?.apply {
             friendService.deleteFriendByFriend(Friend(null, id, userId)).enqueue(basicCallback(event))
         }
     }

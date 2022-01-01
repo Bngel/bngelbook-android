@@ -71,8 +71,8 @@ class UserDetailActivity : BaseActivity() {
 
     private fun initType() {
         user.value?.id?.let { it ->
-            val userId = GlobalVariables.USER.value?.id
-            if (userId != null && it == GlobalVariables.USER.value?.id) {
+            val userId = GlobalVariables.USER?.id
+            if (userId != null && it == GlobalVariables.USER?.id) {
                 menuType = menuTypeSelf
             }
             else {

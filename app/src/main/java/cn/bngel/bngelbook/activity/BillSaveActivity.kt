@@ -423,7 +423,7 @@ class BillSaveActivity : BaseActivity() {
     }
 
     private fun getUserAccounts() {
-        GlobalVariables.USER.value?.apply {
+        GlobalVariables.USER?.apply {
             val userId = id
             if (userId != null) {
                 AccountApi.getAccountsByUserId(userId) { result ->

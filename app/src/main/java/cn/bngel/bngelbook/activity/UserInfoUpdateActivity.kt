@@ -106,7 +106,7 @@ class UserInfoUpdateActivity : BaseActivity() {
 
     @Composable
     private fun UserInfoUpdateItems() {
-        val user = GlobalVariables.USER.value
+        val user = GlobalVariables.USER
         user?.apply {
 
             udProfile.value = profile?:""
@@ -188,20 +188,20 @@ class UserInfoUpdateActivity : BaseActivity() {
 
     private fun updateUser() {
         val user = User(
-            id = GlobalVariables.USER.value?.id,
+            id = GlobalVariables.USER?.id,
             username = udUsername.value,
             gender = udGender.value,
             birthday = udBirthday.value
         )
         UserApi.updateUserById(user) { result ->
             if (result?.code == 200) {
-                GlobalVariables.USER.value?.apply {
+                GlobalVariables.USER?.apply {
                     username = udUsername.value
                     gender = udGender.value
                     birthday = udBirthday.value
                 }
                 val intent = Intent(this@UserInfoUpdateActivity, UserDetailActivity::class.java)
-                intent.putExtra("user", GlobalVariables.USER.value)
+                intent.putExtra("user", GlobalVariables.USER)
                 setResult(RESULT_OK, intent)
                 finish()
             }

@@ -7,4 +7,4 @@ data class Book(
     val name: String?,
     val userId: Long?,
     val type: String?
-): Serializable
+): Serializable, Bean()

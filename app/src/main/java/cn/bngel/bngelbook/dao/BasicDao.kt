@@ -17,12 +17,12 @@ interface BasicDao {
 
     companion object {
 
-        private const val BASE_URL = "http://192.168.1.110"
-        const val USER_URL = "$BASE_URL:9001/consumer/user/"
-        const val BOOK_URL = "$BASE_URL:9002/consumer/book/"
-        const val ACCOUNT_URL = "$BASE_URL:9003/consumer/account/"
-        const val BILL_URL = "$BASE_URL:9004/consumer/bill/"
-        const val FRIEND_URL = "$BASE_URL:9005/consumer/friend/"
+        private const val BASE_URL = "http://bngel.cn"
+        const val USER_URL = "$BASE_URL:9000/consumer/user/"
+        const val BOOK_URL = "$BASE_URL:9000/consumer/book/"
+        const val ACCOUNT_URL = "$BASE_URL:9000/consumer/account/"
+        const val BILL_URL = "$BASE_URL:9000/consumer/bill/"
+        const val FRIEND_URL = "$BASE_URL:9000/consumer/friend/"
 
         inline fun <reified T: BasicDao> create(url: String): T {
             val baseUrl = url

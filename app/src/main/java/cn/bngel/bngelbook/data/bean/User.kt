@@ -12,4 +12,4 @@ data class User(
     var profile: String? = null,
     var registerDate: String? = null,
     var username: String? = null
-): Serializable
+): Serializable, Bean()

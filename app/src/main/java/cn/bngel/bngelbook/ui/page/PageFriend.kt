@@ -91,7 +91,7 @@ object PageFriend: BasePage() {
 
     private fun initFriends() {
         loading.value = true
-        val userId = GlobalVariables.USER.value?.id
+        val userId = GlobalVariables.USER?.id
         if (userId != null) {
             UserApi.getFriendsById(userId) { result ->
                 if (result?.data != null) {

@@ -2,6 +2,7 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -33,11 +34,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
 import kotlinx.coroutines.delay
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 import kotlin.concurrent.thread
 
 class LoginActivity : BaseActivity() {
@@ -135,7 +139,7 @@ class LoginActivity : BaseActivity() {
                 if (it.length <= 11)
                     userPhone.value = it
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Spacer(modifier = Modifier.height(30.dp))
         Button(enabled = smsClock.value == 0 && userPhone.value.length == 11,
@@ -190,7 +194,7 @@ class LoginActivity : BaseActivity() {
             onValueChange = {
                 userAccount = it
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         TextField(modifier = Modifier.padding(10.dp),
             value = userPassword,
@@ -219,10 +223,8 @@ class LoginActivity : BaseActivity() {
                                 intent.putExtra("loginState", true)
                                 intent.putExtra("userInfo", result.data)
                                 this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
-                                getSharedPreferences("loginState", MODE_PRIVATE).edit {
-                                    putBoolean("state", true)
-                                    putString("account", account)
-                                    putString("password", password)
+                                getSharedPreferences("localData", MODE_PRIVATE).edit {
+                                    putString("user", result.data?.base64)
                                 }
                                 Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT)
                                     .show()

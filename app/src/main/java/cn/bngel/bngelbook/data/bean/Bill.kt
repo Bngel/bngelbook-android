@@ -12,4 +12,4 @@ data class Bill(
     val io: Int?,
     val tags: String?,
     val type: String?
-): Serializable
+): Serializable, Bean()

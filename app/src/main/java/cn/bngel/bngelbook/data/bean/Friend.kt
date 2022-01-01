@@ -6,4 +6,4 @@ data class Friend(
     val id: Long?,
     val user1Id: Long?,
     val user2Id: Long?
-): Serializable
+): Serializable, Bean()

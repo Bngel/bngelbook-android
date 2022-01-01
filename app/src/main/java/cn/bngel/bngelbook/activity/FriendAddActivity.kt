@@ -125,7 +125,7 @@ class FriendAddActivity : BaseActivity() {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) {
-                    val friend = Friend(null, GlobalVariables.USER.value?.id, user.id)
+                    val friend = Friend(null, GlobalVariables.USER?.id, user.id)
                     FriendApi.postFriend(friend) { result ->
                         Toast.makeText(this@FriendAddActivity, when(result?.code) {
                             200 -> "好友请求发送成功"
