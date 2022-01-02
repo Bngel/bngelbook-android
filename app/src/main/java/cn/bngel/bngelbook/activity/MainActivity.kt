@@ -36,8 +36,16 @@ import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
+import cn.bngel.bngelbook.ui.widget.UiWidget
+import cn.bngel.bngelbook.utils.TencentcloudUtils
+import com.tencent.cos.xml.exception.CosXmlClientException
+import com.tencent.cos.xml.exception.CosXmlServiceException
+import com.tencent.cos.xml.listener.CosXmlResultListener
+import com.tencent.cos.xml.model.CosXmlRequest
+import com.tencent.cos.xml.model.CosXmlResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.ObjectInputStream
 import java.time.LocalDate
 
@@ -195,12 +203,43 @@ class MainActivity : BaseActivity() {
                         }
                     }
             ) {
-                Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
-                    alignment = Alignment.TopCenter, modifier = Modifier
-                        .width(60.dp)
-                        .height(60.dp))
                 if (!loginState.value) {
+                    Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
+                        alignment = Alignment.TopCenter, modifier = Modifier
+                            .width(60.dp)
+                            .height(60.dp))
                     Text(text = "点击登录", modifier = Modifier.padding(top = 10.dp))
+                }
+                else {
+                    val path = externalCacheDir.toString()
+                    val fileName = "/bngelbook-profile.png"
+                    val filePath = path + fileName
+                    val fileExist = mutableStateOf(File(filePath).exists())
+                    if (fileExist.value) {
+                        UiWidget.CustomImage(
+                            res = filePath,
+                            placeHolder = R.drawable.default_profile,
+                            alignment = Alignment.TopCenter,
+                            modifier = Modifier.width(60.dp).height(60.dp)
+                        )
+                    }
+                    else {
+                        val resultListener = object: CosXmlResultListener {
+                            override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
+                                fileExist.value = true
+                            }
+                            override fun onFail(
+                                p0: CosXmlRequest?,
+                                p1: CosXmlClientException?,
+                                p2: CosXmlServiceException?
+                            ) {
+                                p1?.printStackTrace()
+                                p2?.printStackTrace()
+                            }
+                        }
+                        TencentcloudUtils.downloadFile("bngelbook-profile", GlobalVariables.USER?.profile, "bngelbook-profile.png",
+                            cosXmlResultListener = resultListener)
+                    }
                 }
             }
             if (loginState.value) {

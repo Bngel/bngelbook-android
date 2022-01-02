@@ -50,7 +50,7 @@ object UiWidget {
     }
 
     @Composable
-    fun CustomImage(res: String, placeHolder: Int, contentDescription: String? = null, modifier: Modifier = Modifier) {
+    fun CustomImage(res: String?, placeHolder: Int, contentDescription: String? = null, modifier: Modifier = Modifier, alignment: Alignment = Alignment.Center) {
         Image(painter = rememberGlidePainter(
             request = res,
             previewPlaceholder = placeHolder
@@ -58,11 +58,11 @@ object UiWidget {
     }
 
     @Composable
-    fun CustomImage(res: Int, placeHolder: Int, contentDescription: String? = null, modifier: Modifier = Modifier) {
+    fun CustomImage(res: Int, placeHolder: Int, contentDescription: String? = null, modifier: Modifier = Modifier, alignment: Alignment = Alignment.Center) {
         Image(painter = rememberGlidePainter(
             request = res,
             previewPlaceholder = placeHolder
-        ), contentDescription = contentDescription, modifier = modifier)
+        ), contentDescription = contentDescription, modifier = modifier, alignment = alignment)
     }
 
 
