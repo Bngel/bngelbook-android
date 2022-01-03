@@ -1,5 +1,6 @@
 package cn.bngel.bngelbook.ui.widget
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.activity.BaseActivity
 import cn.bngel.bngelbook.data.GlobalVariables
+import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.utils.TencentcloudUtils
 import cn.bngel.bngelbook.utils.UiUtils
 import com.google.accompanist.glide.rememberGlidePainter
@@ -105,19 +107,11 @@ object UiWidget {
     }
 
     @Composable
-    fun CustomProfileImage(filePath: String = context.externalCacheDir.toString() + "/bngelbook-profile.png", modifier: Modifier = Modifier) {
+    fun CustomProfileImage(filePath: String = GlobalVariables.getDefaultProfile(), modifier: Modifier = Modifier) {
         val fileExist = remember {
-            mutableStateOf(File(filePath).exists())
+            mutableStateOf(File(GlobalVariables.getDefaultProfile()).exists())
         }
-        if (fileExist.value) {
-            CustomCircleImage(
-                res = filePath,
-                placeHolder = R.drawable.default_profile,
-                alignment = Alignment.TopCenter,
-                modifier = modifier
-            )
-        }
-        else {
+        if (!fileExist.value) {
             CustomCircleImage(
                 res = R.drawable.default_profile,
                 placeHolder = R.drawable.default_profile,
@@ -137,8 +131,16 @@ object UiWidget {
                     p2?.printStackTrace()
                 }
             }
-            TencentcloudUtils.downloadFile("bngelbook-profile", GlobalVariables.USER?.profile, "bngelbook-profile.png",
+            TencentcloudUtils.downloadFile("bngelbook-profile", UserState.profile.value, "bngelbook-profile.png",
                 cosXmlResultListener = resultListener)
+        }
+        else {
+            CustomCircleImage(
+                res = if (File(filePath).exists()) filePath else GlobalVariables.getDefaultProfile(),
+                placeHolder = R.drawable.default_profile,
+                alignment = Alignment.TopCenter,
+                modifier = modifier
+            )
         }
     }
 

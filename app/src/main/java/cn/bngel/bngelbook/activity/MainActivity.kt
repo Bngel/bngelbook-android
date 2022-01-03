@@ -33,6 +33,7 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
+import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
@@ -218,7 +219,8 @@ class MainActivity : BaseActivity() {
                     Text(text = "点击登录", modifier = Modifier.padding(top = 10.dp))
                 }
                 else {
-                    UiWidget.CustomProfileImage(modifier = Modifier.width(60.dp).height(60.dp))
+                    UiWidget.CustomProfileImage(filePath = UserState.profile.value,
+                        modifier = Modifier.width(60.dp).height(60.dp))
                 }
             }
             if (loginState.value) {

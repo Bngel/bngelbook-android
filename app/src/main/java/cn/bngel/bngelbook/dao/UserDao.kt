@@ -2,6 +2,7 @@ package cn.bngel.bngelbook.dao
 
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.bean.User
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -94,5 +95,13 @@ interface UserDao: BasicDao {
         @Field("phone") phone: String
     ): Call<CommonResult<User>>
 
-
+    /**
+     * User - 更新用户头像
+     */
+    @Multipart
+    @POST("profile")
+    fun postUserProfile(
+        @Part("id") id: Long,
+        @Part profile: MultipartBody.Part
+    ): Call<CommonResult<String>>
 }

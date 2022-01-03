@@ -1,12 +1,16 @@
 package cn.bngel.bngelbook.data
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
+import cn.bngel.bngelbook.activity.ActivityManager
+import cn.bngel.bngelbook.activity.BaseActivity
 import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.data.bean.User
 
 object GlobalVariables {
 
     var USER: User? = null
+
     var BOOK: Book? = null
 
     private val tagsMap = mapOf(
@@ -25,4 +29,7 @@ object GlobalVariables {
     private val inTypesList = listOf("工资")
 
     fun getDefaultTypes(io: Int) = if (io == 1) inTypesList else outTypesList
+
+    fun getDefaultProfile(context: Context = (ActivityManager.getCurActivity() as BaseActivity)) =
+        context.externalCacheDir.toString() + "/bngelbook-profile.png"
 }

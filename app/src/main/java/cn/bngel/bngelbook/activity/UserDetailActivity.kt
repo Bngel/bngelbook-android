@@ -28,13 +28,13 @@ import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.data.bean.User
+import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.network.api.FriendApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.widget.UiWidget
 
 class UserDetailActivity : BaseActivity() {
 
-    private val user = mutableStateOf<User?>(null)
     private val menuTypeUnknown = -1
     private var menuType: Int = menuTypeUnknown
     private val menuExpanded = mutableStateOf(false)
@@ -46,7 +46,6 @@ class UserDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        user.value = intent.getSerializableExtra("user") as User
 
         setContent {
             BngelbookTheme {
@@ -71,7 +70,7 @@ class UserDetailActivity : BaseActivity() {
     }
 
     private fun initType() {
-        user.value?.id?.let { it ->
+        UserState.id.value.let {
             val userId = GlobalVariables.USER?.id
             if (userId != null && it == GlobalVariables.USER?.id) {
                 menuType = menuTypeSelf
@@ -151,8 +150,8 @@ class UserDetailActivity : BaseActivity() {
             .fillMaxWidth()
             .padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                UiWidget.CustomProfileImage(modifier = Modifier.padding(20.dp).width(60.dp).height(60.dp))
-                Text(text = user.value?.username?:"", fontSize = 24.sp, overflow = TextOverflow.Ellipsis, maxLines = 1,
+                UiWidget.CustomProfileImage(filePath = UserState.profile.value, modifier = Modifier.padding(20.dp).width(60.dp).height(60.dp))
+                Text(text = UserState.username.value, fontSize = 24.sp, overflow = TextOverflow.Ellipsis, maxLines = 1,
                     textAlign = TextAlign.End, modifier = Modifier
                         .weight(1F)
                         .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 30.dp))
@@ -166,10 +165,10 @@ class UserDetailActivity : BaseActivity() {
             .fillMaxWidth()
             .padding(20.dp)) {
             Column {
-                UserDetailListCardItem(icon = Icons.Filled.Person, text = user.value?.username?:"")
-                UserDetailListCardItem(icon = Icons.Filled.Phone, text = user.value?.phone?:"")
-                UserDetailListCardItem(icon = Icons.Filled.Email, text = user.value?.email?:"")
-                UserDetailListCardItem(icon = Icons.Filled.DateRange, text = user.value?.birthday?:"")
+                UserDetailListCardItem(icon = Icons.Filled.Person, text = UserState.username.value)
+                UserDetailListCardItem(icon = Icons.Filled.Phone, text = UserState.phone.value)
+                UserDetailListCardItem(icon = Icons.Filled.Email, text = UserState.email.value)
+                UserDetailListCardItem(icon = Icons.Filled.DateRange, text = UserState.birthday.value)
             }
         }
     }
@@ -206,8 +205,8 @@ class UserDetailActivity : BaseActivity() {
             offset = DpOffset(10.dp,10.dp),
         ) {
             UserDetailPopupMenuItem(icon = Icons.Filled.Delete, text = "删除好友"){
-                user.value?.id?.apply {
-                    FriendApi.deleteFriendByUserId(this) { result ->
+                UserState.id.apply {
+                    FriendApi.deleteFriendByUserId(this.value) { result ->
                         if (result?.code == 200) {
                             Toast.makeText(this@UserDetailActivity, "删除好友成功", Toast.LENGTH_SHORT).show()
                             PageManager.updateAllPage()
@@ -229,8 +228,8 @@ class UserDetailActivity : BaseActivity() {
             offset = DpOffset(10.dp,10.dp),
         ) {
             UserDetailPopupMenuItem(icon = Icons.Filled.Add, text = "加为好友"){
-                user.value?.id?.apply {
-                    FriendApi.postFriendByUserId(this) { result ->
+                UserState.id.apply {
+                    FriendApi.postFriendByUserId(this.value) { result ->
                         if (result?.code == 200) {
                             Toast.makeText(this@UserDetailActivity, "添加好友成功", Toast.LENGTH_SHORT).show()
                             PageManager.updateAllPage()
@@ -256,11 +255,4 @@ class UserDetailActivity : BaseActivity() {
         }
     }
 
-    override fun event(result: ActivityResult) {
-        super.event(result)
-        if (result.resultCode == RESULT_OK) {
-            val updatedUser = result.data?.getSerializableExtra("user") as User
-            user.value = updatedUser
-        }
-    }
 }

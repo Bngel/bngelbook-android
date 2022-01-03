@@ -50,18 +50,12 @@ import android.provider.DocumentsContract
 import android.content.ContentUris
 
 import android.os.Environment
+import cn.bngel.bngelbook.data.CommonResult
+import cn.bngel.bngelbook.data.snapshot.UserState
 import com.github.dhaval2404.imagepicker.ImagePicker
 
 
 class UserInfoUpdateActivity : BaseActivity() {
-
-    private val udBirthday = mutableStateOf("")
-    private val udGender = mutableStateOf(0)
-    private val udUsername = mutableStateOf("")
-    private val udProfile = mutableStateOf("")
-    private val filePath by lazy {
-        mutableStateOf(externalCacheDir.toString() + "/bngelbook-profile.png")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +97,7 @@ class UserInfoUpdateActivity : BaseActivity() {
                                     Intent(this@UserInfoUpdateActivity, MainActivity::class.java)
                                 setResult(RESULT_CANCELED, intent)
                                 finish()
+                                UserState.reload()
                             })
                 }
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
@@ -130,20 +125,11 @@ class UserInfoUpdateActivity : BaseActivity() {
 
     @Composable
     private fun UserInfoUpdateItems() {
-        val user = GlobalVariables.USER
-        user?.apply {
-
-            udProfile.value = profile?:""
-            udUsername.value = username?:""
-            udBirthday.value = birthday?:""
-            udGender.value = gender?:1
-
-            Column(modifier = Modifier.fillMaxWidth()) {
-                UserInfoUpdateItemForProfile(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
-                UserInfoUpdateItemForUsername()
-                UserInfoUpdateItemForGender(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
-                UserInfoUpdateItemForBirthday(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
-            }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            UserInfoUpdateItemForProfile(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
+            UserInfoUpdateItemForUsername()
+            UserInfoUpdateItemForGender(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
+            UserInfoUpdateItemForBirthday(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp))
         }
     }
 
@@ -155,7 +141,7 @@ class UserInfoUpdateActivity : BaseActivity() {
                 modifier = Modifier.weight(1F))
             Row(modifier = Modifier.weight(2F), verticalAlignment = Alignment.CenterVertically) {
                 UiWidget.CustomProfileImage(
-                    filePath = filePath.value,
+                    filePath = UserState.profile.value,
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
                         .width(60.dp)
@@ -187,7 +173,7 @@ class UserInfoUpdateActivity : BaseActivity() {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
             Text(text = "用户名", fontSize = 13.sp, textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1F))
-            TextField(value = udUsername.value, onValueChange = {udUsername.value = it},
+            TextField(value = UserState.username.value, onValueChange = {UserState.username.value = it},
                 textStyle = TextStyle(fontSize = 13.sp),colors = TextFieldDefaults.textFieldColors(
                     disabledTextColor = Color.Transparent,
                     backgroundColor = Color.White,
@@ -208,12 +194,12 @@ class UserInfoUpdateActivity : BaseActivity() {
                 modifier = Modifier.weight(1F))
             Row(modifier = Modifier.weight(2F)) {
                 Row(modifier = Modifier.weight(1F), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selected = udGender.value == 1, onClick = { udGender.value = 1 })
+                    RadioButton(selected = UserState.gender.value == 1, onClick = { UserState.gender.value = 1 })
                     Text(text = "男", fontSize = 13.sp, textAlign = TextAlign.Start,
                         modifier = Modifier.padding(start = 5.dp))
                 }
                 Row(modifier = Modifier.weight(1F), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selected = udGender.value == 0, onClick = { udGender.value = 0 })
+                    RadioButton(selected = UserState.gender.value == 0, onClick = { UserState.gender.value = 0 })
                     Text(text = "女", fontSize = 13.sp, textAlign = TextAlign.Start,
                         modifier = Modifier.padding(start = 5.dp))
                 }
@@ -226,29 +212,48 @@ class UserInfoUpdateActivity : BaseActivity() {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
             Text(text = "出生日期", fontSize = 13.sp, textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1F))
-            Text(text = udBirthday.value, fontSize = 13.sp, textAlign = TextAlign.Start,
+            Text(text = UserState.birthday.value, fontSize = 13.sp, textAlign = TextAlign.Start,
                 modifier = Modifier.weight(2F))
         }
     }
 
     private fun updateUser() {
         val user = User(
-            id = GlobalVariables.USER?.id,
-            username = udUsername.value,
-            gender = udGender.value,
-            birthday = udBirthday.value
+            id = UserState.id.value,
+            username = UserState.username.value,
+            gender = UserState.gender.value,
+            birthday = UserState.birthday.value
         )
         UserApi.updateUserById(user) { result ->
             if (result?.code == 200) {
                 GlobalVariables.USER?.apply {
-                    username = udUsername.value
-                    gender = udGender.value
-                    birthday = udBirthday.value
+                    username = UserState.username.value
+                    gender = UserState.gender.value
+                    birthday = UserState.birthday.value
                 }
                 val intent = Intent(this@UserInfoUpdateActivity, UserDetailActivity::class.java)
-                intent.putExtra("user", GlobalVariables.USER)
-                setResult(RESULT_OK, intent)
-                finish()
+                if (UserState.profile.value != GlobalVariables.getDefaultProfile()) {
+                    val file = File(UserState.profile.value)
+                    UserApi.postUserProfile(
+                        GlobalVariables.USER?.id!!,
+                        file
+                    ) { profileResult ->
+                        if (profileResult == null) {
+                            setResult(RESULT_CANCELED)
+                            finish()
+                            UserState.reload()
+                        }
+                        if (profileResult?.code == CommonResult.SUCCESS_CODE) {
+                            GlobalVariables.USER?.profile = profileResult.data
+                            val originProfile = File(GlobalVariables.getDefaultProfile())
+                            if (originProfile.exists()) {
+                                originProfile.delete()
+                            }
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+                    }
+                }
             }
             else {
                 Toast.makeText(this@UserInfoUpdateActivity, "修改信息失败", Toast.LENGTH_SHORT).show()
@@ -262,8 +267,9 @@ class UserInfoUpdateActivity : BaseActivity() {
         if (result.resultCode == RESULT_OK) {
             val uri: Uri = data?.data!!
             val imageFile = File(uri.path?:"")
-            if (imageFile.exists())
-                filePath.value = imageFile.path
+            if (imageFile.exists()) {
+                UserState.profile.value = imageFile.path
+            }
         }
     }
 }
