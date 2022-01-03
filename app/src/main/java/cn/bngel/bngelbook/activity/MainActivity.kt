@@ -160,10 +160,13 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         loginState.value = false
-                        this@MainActivity.getSharedPreferences("localData", MODE_PRIVATE).edit().apply {
-                            putString("user", null)
-                            apply()
-                        }
+                        this@MainActivity
+                            .getSharedPreferences("localData", MODE_PRIVATE)
+                            .edit()
+                            .apply {
+                                putString("user", null)
+                                apply()
+                            }
                         setPage(MainPages.DEFAULT_PAGE)
                     }
                     .padding(20.dp)) {
@@ -204,42 +207,18 @@ class MainActivity : BaseActivity() {
                     }
             ) {
                 if (!loginState.value) {
-                    Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = "profile",
-                        alignment = Alignment.TopCenter, modifier = Modifier
+                    UiWidget.CustomCircleImage(
+                        res = R.drawable.default_profile,
+                        placeHolder = R.drawable.default_profile,
+                        alignment = Alignment.TopCenter,
+                        modifier = Modifier
                             .width(60.dp)
-                            .height(60.dp))
+                            .height(60.dp)
+                    )
                     Text(text = "点击登录", modifier = Modifier.padding(top = 10.dp))
                 }
                 else {
-                    val path = externalCacheDir.toString()
-                    val fileName = "/bngelbook-profile.png"
-                    val filePath = path + fileName
-                    val fileExist = mutableStateOf(File(filePath).exists())
-                    if (fileExist.value) {
-                        UiWidget.CustomImage(
-                            res = filePath,
-                            placeHolder = R.drawable.default_profile,
-                            alignment = Alignment.TopCenter,
-                            modifier = Modifier.width(60.dp).height(60.dp)
-                        )
-                    }
-                    else {
-                        val resultListener = object: CosXmlResultListener {
-                            override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
-                                fileExist.value = true
-                            }
-                            override fun onFail(
-                                p0: CosXmlRequest?,
-                                p1: CosXmlClientException?,
-                                p2: CosXmlServiceException?
-                            ) {
-                                p1?.printStackTrace()
-                                p2?.printStackTrace()
-                            }
-                        }
-                        TencentcloudUtils.downloadFile("bngelbook-profile", GlobalVariables.USER?.profile, "bngelbook-profile.png",
-                            cosXmlResultListener = resultListener)
-                    }
+                    UiWidget.CustomProfileImage(modifier = Modifier.width(60.dp).height(60.dp))
                 }
             }
             if (loginState.value) {

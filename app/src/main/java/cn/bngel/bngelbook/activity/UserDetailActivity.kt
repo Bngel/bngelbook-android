@@ -30,6 +30,7 @@ import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.api.FriendApi
 import cn.bngel.bngelbook.ui.page.PageManager
+import cn.bngel.bngelbook.ui.widget.UiWidget
 
 class UserDetailActivity : BaseActivity() {
 
@@ -150,9 +151,7 @@ class UserDetailActivity : BaseActivity() {
             .fillMaxWidth()
             .padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.default_profile),
-                    contentDescription = null,
-                    modifier = Modifier.padding(20.dp))
+                UiWidget.CustomProfileImage(modifier = Modifier.padding(20.dp).width(60.dp).height(60.dp))
                 Text(text = user.value?.username?:"", fontSize = 24.sp, overflow = TextOverflow.Ellipsis, maxLines = 1,
                     textAlign = TextAlign.End, modifier = Modifier
                         .weight(1F)

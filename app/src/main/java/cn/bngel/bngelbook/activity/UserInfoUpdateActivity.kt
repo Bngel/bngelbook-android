@@ -1,9 +1,11 @@
 package cn.bngel.bngelbook.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -30,6 +32,26 @@ import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
+import cn.bngel.bngelbook.ui.widget.UiWidget
+import cn.bngel.bngelbook.utils.UiUtils
+import androidx.core.content.FileProvider
+
+import android.os.Build
+import android.util.Log
+import cn.bngel.bngelbook.utils.TencentcloudUtils
+import com.bumptech.glide.load.resource.file.FileDecoder
+import java.io.File
+import java.lang.NullPointerException
+import java.net.URI
+import android.provider.MediaStore
+
+import android.provider.DocumentsContract
+
+import android.content.ContentUris
+
+import android.os.Environment
+import com.github.dhaval2404.imagepicker.ImagePicker
+
 
 class UserInfoUpdateActivity : BaseActivity() {
 
@@ -37,6 +59,9 @@ class UserInfoUpdateActivity : BaseActivity() {
     private val udGender = mutableStateOf(0)
     private val udUsername = mutableStateOf("")
     private val udProfile = mutableStateOf("")
+    private val filePath by lazy {
+        mutableStateOf(externalCacheDir.toString() + "/bngelbook-profile.png")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +104,6 @@ class UserInfoUpdateActivity : BaseActivity() {
                                 setResult(RESULT_CANCELED, intent)
                                 finish()
                             })
-
                 }
                 Row(modifier = Modifier.weight(1F), horizontalArrangement = Arrangement.End) {
                     Image(imageVector = Icons.Filled.Check, contentDescription = "ok_btn",
@@ -122,17 +146,38 @@ class UserInfoUpdateActivity : BaseActivity() {
             }
         }
     }
-    
+
     @Composable
     private fun UserInfoUpdateItemForProfile(modifier: Modifier = Modifier) {
+
         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
             Text(text = "头像", fontSize = 13.sp, textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1F))
             Row(modifier = Modifier.weight(2F), verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.default_profile), contentDescription = null,
+                UiWidget.CustomProfileImage(
+                    filePath = filePath.value,
                     modifier = Modifier
+                        .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
+                        .width(60.dp)
                         .height(60.dp)
-                        .width(60.dp))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            ImagePicker.with(this@UserInfoUpdateActivity)
+                                .cropSquare()
+                                .galleryMimeTypes(  //Exclude gif images
+                                    mimeTypes = arrayOf(
+                                        "image/png",
+                                        "image/jpg",
+                                        "image/jpeg"
+                                    )
+                                )
+                                .galleryOnly()
+                                .createIntent { intent ->
+                                    launcher.launch(intent)
+                                }
+                        })
             }
         }
     }
@@ -208,6 +253,17 @@ class UserInfoUpdateActivity : BaseActivity() {
             else {
                 Toast.makeText(this@UserInfoUpdateActivity, "修改信息失败", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun event(result: ActivityResult) {
+        super.event(result)
+        val data = result.data
+        if (result.resultCode == RESULT_OK) {
+            val uri: Uri = data?.data!!
+            val imageFile = File(uri.path?:"")
+            if (imageFile.exists())
+                filePath.value = imageFile.path
         }
     }
 }
