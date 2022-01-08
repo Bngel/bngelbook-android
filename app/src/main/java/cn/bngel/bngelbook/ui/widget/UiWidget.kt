@@ -109,7 +109,7 @@ object UiWidget {
     @Composable
     fun CustomProfileImage(filePath: String = GlobalVariables.getDefaultProfile(), modifier: Modifier = Modifier) {
         val fileExist = remember {
-            mutableStateOf(File(GlobalVariables.getDefaultProfile()).exists())
+            mutableStateOf(File(filePath).exists())
         }
         if (!fileExist.value) {
             CustomCircleImage(
@@ -131,12 +131,12 @@ object UiWidget {
                     p2?.printStackTrace()
                 }
             }
-            TencentcloudUtils.downloadFile("bngelbook-profile", UserState.profile.value, "bngelbook-profile.png",
+            TencentcloudUtils.downloadFile("bngelbook-profile", GlobalVariables.USER?.profile?:"", "bngelbook-profile.png",
                 cosXmlResultListener = resultListener)
         }
         else {
             CustomCircleImage(
-                res = if (File(filePath).exists()) filePath else GlobalVariables.getDefaultProfile(),
+                res = filePath,
                 placeHolder = R.drawable.default_profile,
                 alignment = Alignment.TopCenter,
                 modifier = modifier

@@ -1,6 +1,7 @@
 package cn.bngel.bngelbook.dao
 
 import cn.bngel.bngelbook.network.interceptor.TimeoutInterceptor
+import cn.bngel.bngelbook.network.interceptor.TokenInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -35,7 +36,8 @@ interface BasicDao {
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(5, TimeUnit.SECONDS)
                 .writeTimeout(5, TimeUnit.SECONDS)
-                .addInterceptor(TimeoutInterceptor())
+                //.addInterceptor(TimeoutInterceptor())
+                .addInterceptor(TokenInterceptor())
                 .build()
 
             val retrofit: Retrofit = Retrofit.Builder()

@@ -220,6 +220,7 @@ class LoginActivity : BaseActivity() {
                     if (result != null) {
                         when (result.code) {
                             200 -> {
+                                GlobalVariables.token = result.message
                                 intent.putExtra("loginState", true)
                                 intent.putExtra("userInfo", result.data)
                                 this@LoginActivity.setResult(RESULT_FIRST_USER, intent)

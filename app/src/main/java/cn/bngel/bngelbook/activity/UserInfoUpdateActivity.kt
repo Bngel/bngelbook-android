@@ -246,9 +246,9 @@ class UserInfoUpdateActivity : BaseActivity() {
                         if (profileResult?.code == CommonResult.SUCCESS_CODE) {
                             GlobalVariables.USER?.profile = profileResult.data
                             val originProfile = File(GlobalVariables.getDefaultProfile())
-                            if (originProfile.exists()) {
-                                originProfile.delete()
-                            }
+                            File(UserState.profile.value).copyTo(originProfile, true)
+/*                            File(UserState.profile.value).delete()
+                            UserState.profile.value = GlobalVariables.getDefaultProfile()*/
                             setResult(RESULT_OK, intent)
                             finish()
                         }

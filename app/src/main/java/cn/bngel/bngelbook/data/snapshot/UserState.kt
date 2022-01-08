@@ -1,5 +1,6 @@
 package cn.bngel.bngelbook.data.snapshot
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.utils.NetworkUtils
@@ -18,7 +19,7 @@ object UserState {
         val profileFile = File(defaultProfile)
         if (profileFile.exists())
             profileFile.delete()
-        mutableStateOf(GlobalVariables.USER?.profile?:"")
+        mutableStateOf(defaultProfile)
     }
 
     fun reload() {

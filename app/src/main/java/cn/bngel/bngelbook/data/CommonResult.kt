@@ -14,6 +14,7 @@ data class CommonResult<T>(
         const val FAILURE_CODE = 400
         const val TIME_OUT_CODE = 408
         const val NO_NETWORK_CODE = 498
+        const val TOKEN_ERROR_CODE = 490
 
     }
 }

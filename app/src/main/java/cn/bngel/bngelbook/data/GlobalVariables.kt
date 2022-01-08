@@ -1,6 +1,7 @@
 package cn.bngel.bngelbook.data
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.activity.BaseActivity
@@ -10,6 +11,8 @@ import cn.bngel.bngelbook.data.bean.User
 object GlobalVariables {
 
     var USER: User? = null
+
+    var token = ""
 
     var BOOK: Book? = null
 
