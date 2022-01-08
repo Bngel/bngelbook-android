@@ -119,6 +119,7 @@ class LoginActivity : BaseActivity() {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     intent.putExtra("loginState", true)
                     intent.putExtra("userInfo", result.data)
+                    GlobalVariables.token = result.message
                     setResult(RESULT_FIRST_USER, intent)
                     finish()
                 }
@@ -226,6 +227,7 @@ class LoginActivity : BaseActivity() {
                                 this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
                                 getSharedPreferences("localData", MODE_PRIVATE).edit {
                                     putString("user", result.data?.base64)
+                                    putString("token", result.message)
                                 }
                                 Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT)
                                     .show()

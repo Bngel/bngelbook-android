@@ -141,7 +141,7 @@ class UserInfoUpdateActivity : BaseActivity() {
                 modifier = Modifier.weight(1F))
             Row(modifier = Modifier.weight(2F), verticalAlignment = Alignment.CenterVertically) {
                 UiWidget.CustomProfileImage(
-                    filePath = UserState.profile.value,
+                    filePath = UserState.profileImage.value,
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 15.dp)
                         .width(60.dp)
@@ -150,7 +150,8 @@ class UserInfoUpdateActivity : BaseActivity() {
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         ) {
-                            ImagePicker.with(this@UserInfoUpdateActivity)
+                            ImagePicker
+                                .with(this@UserInfoUpdateActivity)
                                 .cropSquare()
                                 .galleryMimeTypes(  //Exclude gif images
                                     mimeTypes = arrayOf(
@@ -238,19 +239,17 @@ class UserInfoUpdateActivity : BaseActivity() {
                         GlobalVariables.USER?.id!!,
                         file
                     ) { profileResult ->
-                        if (profileResult == null) {
-                            setResult(RESULT_CANCELED)
-                            finish()
-                            UserState.reload()
-                        }
                         if (profileResult?.code == CommonResult.SUCCESS_CODE) {
                             GlobalVariables.USER?.profile = profileResult.data
                             val originProfile = File(GlobalVariables.getDefaultProfile())
                             File(UserState.profile.value).copyTo(originProfile, true)
-/*                            File(UserState.profile.value).delete()
-                            UserState.profile.value = GlobalVariables.getDefaultProfile()*/
                             setResult(RESULT_OK, intent)
                             finish()
+                        }
+                        else {
+                            setResult(RESULT_CANCELED)
+                            finish()
+                            UserState.reload()
                         }
                     }
                 }
@@ -268,7 +267,7 @@ class UserInfoUpdateActivity : BaseActivity() {
             val uri: Uri = data?.data!!
             val imageFile = File(uri.path?:"")
             if (imageFile.exists()) {
-                UserState.profile.value = imageFile.path
+                UserState.profileImage.value = imageFile.path
             }
         }
     }

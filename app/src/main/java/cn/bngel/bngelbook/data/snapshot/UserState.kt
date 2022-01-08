@@ -14,13 +14,15 @@ object UserState {
     val email by lazy { mutableStateOf(GlobalVariables.USER?.email?:"") }
     val gender by lazy { mutableStateOf(GlobalVariables.USER?.gender?:1) }
     val phone by lazy { mutableStateOf(GlobalVariables.USER?.phone?:"") }
-    val profile by lazy {
+    val profile by lazy { mutableStateOf(GlobalVariables.USER?.phone?:"") }
+    val profileImage by lazy {
         val defaultProfile = GlobalVariables.getDefaultProfile()
         val profileFile = File(defaultProfile)
         if (profileFile.exists())
             profileFile.delete()
         mutableStateOf(defaultProfile)
     }
+
 
     fun reload() {
         id.value = GlobalVariables.USER?.id?:-1L

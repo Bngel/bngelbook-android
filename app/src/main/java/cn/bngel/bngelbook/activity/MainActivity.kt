@@ -219,7 +219,7 @@ class MainActivity : BaseActivity() {
                     Text(text = "点击登录", modifier = Modifier.padding(top = 10.dp))
                 }
                 else {
-                    UiWidget.CustomProfileImage(filePath = UserState.profile.value,
+                    UiWidget.CustomProfileImage(filePath = UserState.profileImage.value,
                         modifier = Modifier.width(60.dp).height(60.dp))
                 }
             }
@@ -277,6 +277,8 @@ class MainActivity : BaseActivity() {
                 loginState.value = true
                 pageState.value = MainPages.HOME_PAGE
             }
+            val token = getString("token", "")?:""
+            GlobalVariables.token = token
         }
     }
 

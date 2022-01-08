@@ -150,7 +150,7 @@ class UserDetailActivity : BaseActivity() {
             .fillMaxWidth()
             .padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                UiWidget.CustomProfileImage(filePath = UserState.profile.value, modifier = Modifier.padding(20.dp).width(60.dp).height(60.dp))
+                UiWidget.CustomProfileImage(filePath = UserState.profileImage.value, modifier = Modifier.padding(20.dp).width(60.dp).height(60.dp))
                 Text(text = UserState.username.value, fontSize = 24.sp, overflow = TextOverflow.Ellipsis, maxLines = 1,
                     textAlign = TextAlign.End, modifier = Modifier
                         .weight(1F)
