@@ -23,13 +23,13 @@ interface UserDao {
     fun deleteUser(user: User): Int
 
     @Query("SELECT * FROM user WHERE id = :uid")
-    fun getUserById(uid: Long): User
+    fun getUserById(uid: Long): User?
 
     @Query("SELECT * FROM user")
     fun getAllUsers(): List<User>
 
     @Query("SELECT * FROM user")
-    fun getDefaultUser(): User
+    fun getDefaultUser(): User?
 
     @Query("DELETE FROM user")
     fun clearUsers(): Int

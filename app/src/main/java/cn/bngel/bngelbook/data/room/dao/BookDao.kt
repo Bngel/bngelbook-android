@@ -23,7 +23,7 @@ interface BookDao {
     fun deleteBook(book: Book): Int
 
     @Query("SELECT * FROM book WHERE id = :id")
-    fun getBookById(id: Long): Book
+    fun getBookById(id: Long): Book?
 
     @Query("SELECT * FROM book WHERE user_id = :userId")
     fun getBookByUserId(userId: Long): List<Book>

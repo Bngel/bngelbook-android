@@ -23,7 +23,7 @@ interface AccountDao {
     fun deleteAccount(account: Account): Int
 
     @Query("SELECT * FROM account WHERE id = :id")
-    fun getAccountById(id: Long): Account
+    fun getAccountById(id: Long): Account?
 
     @Query("SELECT * FROM account WHERE user_id = :userId")
     fun getUserAccounts(userId: Long): List<Account>

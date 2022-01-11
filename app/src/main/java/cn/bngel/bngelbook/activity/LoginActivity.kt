@@ -35,6 +35,7 @@ import androidx.core.content.edit
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.bean.User
+import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
@@ -225,10 +226,8 @@ class LoginActivity : BaseActivity() {
                                 intent.putExtra("loginState", true)
                                 intent.putExtra("userInfo", result.data)
                                 this@LoginActivity.setResult(RESULT_FIRST_USER, intent)
-                                getSharedPreferences("localData", MODE_PRIVATE).edit {
-                                    putString("user", result.data?.base64)
-                                    putString("token", result.message)
-                                }
+                                spApi.setLocalUser(result.data?.base64)
+                                spApi.setToken(result.message)
                                 Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT)
                                     .show()
                                 finish()

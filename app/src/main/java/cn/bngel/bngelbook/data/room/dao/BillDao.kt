@@ -23,11 +23,11 @@ interface BillDao {
     fun deleteBill(bill: Bill): Int
 
     @Query("SELECT * FROM bill WHERE id = :id")
-    fun getBillById(id: Long): Bill
+    fun getBillById(id: Long): Bill?
 
     @Query("SELECT * FROM bill WHERE book_id = :bookId")
-    fun getBillsByBookId(bookId: Long)
+    fun getBillsByBookId(bookId: Long): List<Bill>
 
     @Query("SELECT * FROM bill WHERE account_id = :accountId")
-    fun getBillsByAccountId(accountId: Long)
+    fun getBillsByAccountId(accountId: Long): List<Bill>
 }

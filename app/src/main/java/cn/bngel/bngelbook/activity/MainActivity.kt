@@ -33,6 +33,8 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
+import cn.bngel.bngelbook.data.room.api.UserLiteApi
+import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.*
@@ -161,13 +163,7 @@ class MainActivity : BaseActivity() {
                         indication = null
                     ) {
                         loginState.value = false
-                        this@MainActivity
-                            .getSharedPreferences("localData", MODE_PRIVATE)
-                            .edit()
-                            .apply {
-                                putString("user", null)
-                                apply()
-                            }
+                        spApi.clearLocalUser()
                         setPage(MainPages.DEFAULT_PAGE)
                     }
                     .padding(20.dp)) {
@@ -267,19 +263,15 @@ class MainActivity : BaseActivity() {
     }
 
     private fun autoLogin() {
-        getSharedPreferences("localData", MODE_PRIVATE).apply {
-            val userBase64 = getString("user","")
-            if (userBase64 != null && userBase64 != "") {
-                val user = Bean.fromCustomBase64<User>(userBase64)
-                GlobalVariables.USER = user
-                userDays.value =
-                    (LocalDate.now().toEpochDay() - LocalDate.parse(user.registerDate).toEpochDay()).toInt()
-                loginState.value = true
-                pageState.value = MainPages.HOME_PAGE
-            }
-            val token = getString("token", "")?:""
-            GlobalVariables.token = token
+        val user = spApi.getLocalUser()
+        if (user != null) {
+            GlobalVariables.USER = user
+            userDays.value =
+                (LocalDate.now().toEpochDay() - LocalDate.parse(user.registerDate).toEpochDay()).toInt()
+            loginState.value = true
+            pageState.value = MainPages.HOME_PAGE
         }
+        GlobalVariables.token = spApi.getToken()
     }
 
     private fun setPage(page: MainPages) {
