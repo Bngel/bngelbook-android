@@ -12,14 +12,9 @@ import java.io.Serializable
  * @description:
  */
 
-@Entity(tableName = "account")
 data class Account(
-    @PrimaryKey
     val id: Long?,
-    @ColumnInfo(name = "name")
     val name: String?,
-    @ColumnInfo(name = "user_id")
     val userId: Long?,
-    @ColumnInfo(name = "balance")
     val balance: Double?
 ): Serializable, Bean()

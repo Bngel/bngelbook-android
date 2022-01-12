@@ -33,7 +33,6 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
-import cn.bngel.bngelbook.data.room.api.UserLiteApi
 import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.network.api.UserApi
@@ -89,11 +88,11 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initData()
         PageManager.registerPageManager(this)
         setContent {
             BngelbookTheme {
                 Surface(color = MaterialTheme.colors.background) {
+                    initData()
                     MainPage()
                 }
             }
@@ -268,16 +267,18 @@ class MainActivity : BaseActivity() {
 
     private fun autoUpdateCheck() {
         VersionApi.getNewestVersion { result ->
+            val version = getVersionName()
+            Log.d("updateVersion", version)
             if (result?.code == CommonResult.SUCCESS_CODE) {
                 val newestVersion = result.data
                 if (newestVersion?.version != null && newestVersion.version != getVersionName()) {
                     Log.d("updateVersion", "版本需要更新 from ${getVersionName()} to ${newestVersion.version}")
                     val progressListener = CosXmlProgressListener { complete, target ->
-                        Log.d("updateProgress", "$complete/$target")
+                        Log.d("updateVersion", "$complete/$target")
                     }
                     val resultListener = object: CosXmlResultListener {
                         override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
-                            Log.d("updateProgress", "download successfully")
+                            Log.d("updateVersion", "download successfully")
                         }
 
                         override fun onFail(
@@ -285,7 +286,7 @@ class MainActivity : BaseActivity() {
                             p1: CosXmlClientException?,
                             p2: CosXmlServiceException?
                         ) {
-                            Log.d("updateProgress", "download failed")
+                            Log.d("updateVersion", "download failed")
                         }
                     }
                     VersionApi.downloadNewestVersion(newestVersion, progressListener, resultListener)
