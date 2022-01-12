@@ -12,6 +12,7 @@ object DataManager {
     private var billDB: BillDatabase? = null
     private var bookDB: BookDatabase? = null
     private var friendDB: FriendDatabase? = null
+    private var versionDB: VersionDatabase? = null
 
     fun getUserDB(): UserDatabase {
         if (userDB == null) {
@@ -51,5 +52,13 @@ object DataManager {
                         FriendDatabase::class.java, "friendDB").build()
         }
         return friendDB!!
+    }
+
+    fun getVersionDB(): VersionDatabase {
+        if (versionDB == null) {
+            versionDB = Room.databaseBuilder(ActivityManager.getCurActivity() as BaseActivity,
+                        VersionDatabase::class.java, "versionDB").build()
+        }
+        return versionDB!!
     }
 }

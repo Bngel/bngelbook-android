@@ -14,13 +14,13 @@ object spApi {
 
     private fun getContext() = ActivityManager.getCurActivity() as BaseActivity
 
-    fun readLocalData(readEventListener: SharedPreferences.() -> Unit) {
+    private fun readLocalData(readEventListener: SharedPreferences.() -> Unit) {
         getContext().getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE).apply {
             readEventListener()
         }
     }
 
-    fun writeLocalData(writeEventListener: SharedPreferences.Editor.() -> Unit) {
+    private fun writeLocalData(writeEventListener: SharedPreferences.Editor.() -> Unit) {
         getContext().getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE).edit {
             writeEventListener()
             apply()

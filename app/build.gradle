@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     lintOptions {
         checkReleaseBuilds false
@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId "cn.bngel.bngelbook"
         minSdk 26
-        targetSdk 30
+        targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -24,6 +24,7 @@ interface BasicDao {
         const val ACCOUNT_URL = "$BASE_URL:9000/consumer/account/"
         const val BILL_URL = "$BASE_URL:9000/consumer/bill/"
         const val FRIEND_URL = "$BASE_URL:9000/consumer/friend/"
+        const val VERSION_URL = "$BASE_URL:9000/consumer/version/"
 
         inline fun <reified T: BasicDao> create(url: String): T {
             val baseUrl = url
