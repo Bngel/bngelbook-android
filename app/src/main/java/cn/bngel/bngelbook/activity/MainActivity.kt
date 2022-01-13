@@ -41,6 +41,7 @@ import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
 import cn.bngel.bngelbook.utils.TencentcloudUtils
+import cn.bngel.bngelbook.utils.UiUtils
 import com.tencent.cos.xml.exception.CosXmlClientException
 import com.tencent.cos.xml.exception.CosXmlServiceException
 import com.tencent.cos.xml.listener.CosXmlProgressListener
@@ -279,6 +280,11 @@ class MainActivity : BaseActivity() {
                     val resultListener = object: CosXmlResultListener {
                         override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
                             Log.d("updateVersion", "download successfully")
+                            val path = externalCacheDir.toString() + "/bngelbook-${newestVersion.version}.apk"
+                            val file = File(path)
+                            Log.d("updateVersion", "apkPath: $path")
+                            Log.d("updateVersion", "安装包apk存在:" + file.exists())
+                            UiUtils.installApk(file)
                         }
 
                         override fun onFail(

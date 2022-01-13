@@ -1,5 +1,6 @@
 package cn.bngel.bngelbook.network.api
 
+import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.dao.BasicDao
 import cn.bngel.bngelbook.dao.VersionDao
 import cn.bngel.bngelbook.data.CommonResult
@@ -18,13 +19,17 @@ object VersionApi: BaseApi() {
         versionService.getNewestVersion().enqueue(basicCallback(event))
     }
 
-    fun downloadNewestVersion(version: Version,
-                              cosXmlProgressListener: CosXmlProgressListener? = null,
-                              cosXmlResultListener: CosXmlResultListener? = null) {
+    fun downloadNewestVersion(
+        version: Version,
+        cosXmlProgressListener: CosXmlProgressListener? = null,
+        cosXmlResultListener: CosXmlResultListener? = null
+    ) {
         val bucketName = "bngelbook-version"
         val fileName = "bngelbook-${version.version}.apk"
-        TencentcloudUtils.downloadFile(bucketName, fileName, fileName,
+        TencentcloudUtils.downloadFile(
+            bucketName, fileName, fileName,
             cosXmlProgressListener = cosXmlProgressListener,
-            cosXmlResultListener = cosXmlResultListener)
+            cosXmlResultListener = cosXmlResultListener
+        )
     }
 }
