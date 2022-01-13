@@ -1,6 +1,5 @@
 package cn.bngel.bngelbook.ui.page
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -60,7 +59,7 @@ object PageAccount: BasePage() {
             }
         }
         if (loading.value)
-            UiWidget.Dialog_Loading{ loading.value = false }
+            UiWidget.LoadingDialog{ loading.value = false }
         loading.value = !bookUpdated.value || !accountUpdated.value
     }
 

@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import cn.bngel.bngelbook.R
@@ -44,8 +43,8 @@ object UiWidget {
     }
 
     @Composable
-    fun Dialog_Loading(properties: DialogProperties? = null,
-                       onDismissRequest: (() -> Unit)? = null) {
+    fun LoadingDialog(properties: DialogProperties? = null,
+                      onDismissRequest: (() -> Unit)? = null) {
         val dialogProperties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = false
@@ -64,6 +63,48 @@ object UiWidget {
                     mutableStateOf("Loading")
                 }
                 Text(text = loadingText, modifier = Modifier.padding(10.dp))
+            }
+        }
+    }
+
+    @Composable
+    fun UpdateProgressDialog(completed: Float, target: Float) {
+        Dialog(onDismissRequest = {}) {
+            Column(modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(10.dp)).padding(20.dp)) {
+                Text(text = "下载更新", fontSize = 18.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth())
+                Row(modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(5.dp))
+                    .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+                    .fillMaxWidth()) {
+                    Spacer(modifier = Modifier
+                        .height(25.dp)
+                        .fillMaxWidth(completed/target)
+                        .background(color = Color(0xAA66CCFF), shape = RoundedCornerShape(5.dp))
+                    )
+                }
+                Text(text = String.format("%.2f%%", (completed/target) * 100), fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+            }
+        }
+    }
+
+    @Composable
+    fun UpdateProgressDialog(rate: Float) {
+        Dialog(onDismissRequest = {}) {
+            Column(modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(10.dp)).padding(20.dp)) {
+                Text(text = "下载更新", fontSize = 18.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth())
+                Row(modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(5.dp))
+                    .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+                    .fillMaxWidth()) {
+                    Spacer(modifier = Modifier
+                        .height(25.dp)
+                        .fillMaxWidth(rate)
+                        .background(color = Color(0xAA66CCFF), shape = RoundedCornerShape(5.dp))
+                    )
+                }
+                Text(text = String.format("%.2f%%", rate * 100), fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
             }
         }
     }

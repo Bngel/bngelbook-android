@@ -62,6 +62,8 @@ class MainActivity : BaseActivity() {
     private val pageState = mutableStateOf(MainPages.DEFAULT_PAGE)
     private val userDays = mutableStateOf(0)
     private val resUpdate = mutableStateOf(false)
+    private val versionUpdate = mutableStateOf(false)
+    private val versionRate = mutableStateOf(0F)
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
 
@@ -106,6 +108,8 @@ class MainActivity : BaseActivity() {
         scope = rememberCoroutineScope()
         if (resUpdate.value)
             resUpdate.value = false
+        if (versionUpdate.value)
+            UiWidget.UpdateProgressDialog(versionRate.value)
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {
@@ -274,16 +278,17 @@ class MainActivity : BaseActivity() {
                 val newestVersion = result.data
                 if (newestVersion?.version != null && newestVersion.version != getVersionName()) {
                     Log.d("updateVersion", "版本需要更新 from ${getVersionName()} to ${newestVersion.version}")
+                    versionUpdate.value = true
                     val progressListener = CosXmlProgressListener { complete, target ->
-                        Log.d("updateVersion", "$complete/$target")
+                        versionRate.value = (complete.toDouble()/target.toDouble()).toFloat()
+                        Log.d("updateVersion", versionRate.value.toString())
                     }
                     val resultListener = object: CosXmlResultListener {
                         override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
                             Log.d("updateVersion", "download successfully")
                             val path = externalCacheDir.toString() + "/bngelbook-${newestVersion.version}.apk"
                             val file = File(path)
-                            Log.d("updateVersion", "apkPath: $path")
-                            Log.d("updateVersion", "安装包apk存在:" + file.exists())
+                            versionUpdate.value = false
                             UiUtils.installApk(file)
                         }
 
@@ -293,6 +298,7 @@ class MainActivity : BaseActivity() {
                             p2: CosXmlServiceException?
                         ) {
                             Log.d("updateVersion", "download failed")
+                            versionUpdate.value = false
                         }
                     }
                     VersionApi.downloadNewestVersion(newestVersion, progressListener, resultListener)

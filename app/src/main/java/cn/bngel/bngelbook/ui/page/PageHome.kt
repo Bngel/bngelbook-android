@@ -1,6 +1,5 @@
 package cn.bngel.bngelbook.ui.page
 
-import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +14,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Icon
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -25,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,7 +38,7 @@ import cn.bngel.bngelbook.data.bean.Bill
 import cn.bngel.bngelbook.data.bean.Book
 import cn.bngel.bngelbook.network.api.BillApi
 import cn.bngel.bngelbook.network.api.BookApi
-import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
+import cn.bngel.bngelbook.ui.widget.UiWidget.LoadingDialog
 import java.util.*
 
 object PageHome: BasePage() {
@@ -69,7 +66,7 @@ object PageHome: BasePage() {
             if (getUpdate())
                 updateBills()
             if (loadingBills.value) {
-                Dialog_Loading{loadingBills.value = false}
+                LoadingDialog{loadingBills.value = false}
             }
             HomeBillList(billList)
         }

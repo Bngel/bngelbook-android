@@ -2,8 +2,6 @@ package cn.bngel.bngelbook.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -19,30 +17,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Sleep
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.edit
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
-import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.ui.page.PageManager
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
-import cn.bngel.bngelbook.ui.widget.UiWidget.Dialog_Loading
-import kotlinx.coroutines.delay
-import java.io.ByteArrayOutputStream
-import java.io.ObjectOutputStream
+import cn.bngel.bngelbook.ui.widget.UiWidget.LoadingDialog
 import kotlin.concurrent.thread
 
 class LoginActivity : BaseActivity() {
@@ -70,7 +59,7 @@ class LoginActivity : BaseActivity() {
     @Composable
     private fun LoginPage() {
         if (loading.value)
-            Dialog_Loading { loading.value = false }
+            LoadingDialog { loading.value = false }
         Box(
             contentAlignment = Alignment.Center, modifier = Modifier
                 .fillMaxWidth()

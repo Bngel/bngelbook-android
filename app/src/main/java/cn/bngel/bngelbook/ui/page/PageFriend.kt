@@ -1,6 +1,5 @@
 package cn.bngel.bngelbook.ui.page
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -45,7 +44,7 @@ object PageFriend: BasePage() {
             FriendList()
         }
         if (loading.value)
-            UiWidget.Dialog_Loading{loading.value = false}
+            UiWidget.LoadingDialog{loading.value = false}
     }
 
     @Composable

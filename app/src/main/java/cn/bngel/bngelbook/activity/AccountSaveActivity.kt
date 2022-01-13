@@ -54,7 +54,7 @@ class AccountSaveActivity : BaseActivity() {
                 Surface(color = MaterialTheme.colors.background){
                     AccountSavePage()
                     if (loading.value)
-                        UiWidget.Dialog_Loading{loading.value = false}
+                        UiWidget.LoadingDialog{loading.value = false}
                 }
             }
         }
