@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -68,9 +69,42 @@ object UiWidget {
     }
 
     @Composable
-    fun UpdateProgressDialog(completed: Float, target: Float) {
+    fun UpdateCheckDialog(onConfirmListener: (() -> Unit)? = null,
+                          onCancelListener: (() -> Unit)? = null) {
         Dialog(onDismissRequest = {}) {
-            Column(modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(10.dp)).padding(20.dp)) {
+            Column(modifier = Modifier
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                .padding(20.dp)) {
+                Text(text = "下载更新", fontSize = 18.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth())
+                Row(modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth()) {
+                    Text(text = "检测到有新版本, 是否立即更新?")
+                }
+                Row(modifier = Modifier.align(Alignment.End)) {
+                    Text(text = "取消", fontSize = 14.sp, modifier = Modifier.padding(10.dp)
+                        .clickable {
+                            if (onCancelListener != null) {
+                                onCancelListener()
+                            }
+                        })
+                    Text(text = "确定", fontSize = 14.sp, modifier = Modifier.padding(10.dp)
+                        .clickable {
+                            if (onConfirmListener != null) {
+                                onConfirmListener()
+                            }
+                        })
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun UpdateProgressDialog(completed: Double, target: Double) {
+        Dialog(onDismissRequest = {}) {
+            Column(modifier = Modifier
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                .padding(20.dp)) {
                 Text(text = "下载更新", fontSize = 18.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth())
                 Row(modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)
@@ -79,7 +113,7 @@ object UiWidget {
                     .fillMaxWidth()) {
                     Spacer(modifier = Modifier
                         .height(25.dp)
-                        .fillMaxWidth(completed/target)
+                        .fillMaxWidth((completed / target).toFloat())
                         .background(color = Color(0xAA66CCFF), shape = RoundedCornerShape(5.dp))
                     )
                 }
@@ -91,7 +125,9 @@ object UiWidget {
     @Composable
     fun UpdateProgressDialog(rate: Float) {
         Dialog(onDismissRequest = {}) {
-            Column(modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(10.dp)).padding(20.dp)) {
+            Column(modifier = Modifier
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+                .padding(20.dp)) {
                 Text(text = "下载更新", fontSize = 18.sp, textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth())
                 Row(modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)
@@ -116,8 +152,9 @@ object UiWidget {
             previewPlaceholder = placeHolder
         ), contentDescription = contentDescription,
             contentScale = ContentScale.Crop,
-            modifier = modifier.clip(RoundedCornerShape(50))
-            .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(50)))
+            modifier = modifier
+                .clip(RoundedCornerShape(50))
+                .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(50)))
     }
 
     @Composable
@@ -127,7 +164,8 @@ object UiWidget {
             previewPlaceholder = placeHolder
         ), contentDescription = contentDescription,
             contentScale = ContentScale.Crop,
-            modifier = modifier.clip(RoundedCornerShape(50))
+            modifier = modifier
+                .clip(RoundedCornerShape(50))
                 .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(50)))
     }
 

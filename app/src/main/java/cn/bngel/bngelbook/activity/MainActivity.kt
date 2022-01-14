@@ -7,9 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -24,8 +26,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.edit
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.CommonResult
@@ -33,6 +37,7 @@ import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
 import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
+import cn.bngel.bngelbook.data.bean.Version
 import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.data.snapshot.UserState
 import cn.bngel.bngelbook.network.api.UserApi
@@ -63,7 +68,9 @@ class MainActivity : BaseActivity() {
     private val userDays = mutableStateOf(0)
     private val resUpdate = mutableStateOf(false)
     private val versionUpdate = mutableStateOf(false)
+    private val versionDownload = mutableStateOf(false)
     private val versionRate = mutableStateOf(0F)
+    private var versionRequired: Version? = null
     private lateinit var scaffoldState: ScaffoldState
     private lateinit var scope: CoroutineScope
 
@@ -108,8 +115,15 @@ class MainActivity : BaseActivity() {
         scope = rememberCoroutineScope()
         if (resUpdate.value)
             resUpdate.value = false
-        if (versionUpdate.value)
+        if (versionDownload.value)
             UiWidget.UpdateProgressDialog(versionRate.value)
+        if (versionUpdate.value)
+            UiWidget.UpdateCheckDialog(onConfirmListener = {
+                versionRequired?.let { downloadUpdatedApk(it) }
+                versionUpdate.value = false
+            }, onCancelListener = {
+                versionUpdate.value = false
+            })
         Scaffold(
             scaffoldState = scaffoldState,
             drawerContent = {
@@ -223,7 +237,9 @@ class MainActivity : BaseActivity() {
                 }
                 else {
                     UiWidget.CustomProfileImage(filePath = UserState.profileImage.value,
-                        modifier = Modifier.width(60.dp).height(60.dp))
+                        modifier = Modifier
+                            .width(60.dp)
+                            .height(60.dp))
                 }
             }
             if (loginState.value) {
@@ -265,6 +281,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
+
+
     private fun initData() {
         autoLogin()
         autoUpdateCheck()
@@ -279,32 +297,38 @@ class MainActivity : BaseActivity() {
                 if (newestVersion?.version != null && newestVersion.version != getVersionName()) {
                     Log.d("updateVersion", "版本需要更新 from ${getVersionName()} to ${newestVersion.version}")
                     versionUpdate.value = true
-                    val progressListener = CosXmlProgressListener { complete, target ->
-                        versionRate.value = (complete.toDouble()/target.toDouble()).toFloat()
-                        Log.d("updateVersion", versionRate.value.toString())
-                    }
-                    val resultListener = object: CosXmlResultListener {
-                        override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
-                            Log.d("updateVersion", "download successfully")
-                            val path = externalCacheDir.toString() + "/bngelbook-${newestVersion.version}.apk"
-                            val file = File(path)
-                            versionUpdate.value = false
-                            UiUtils.installApk(file)
-                        }
-
-                        override fun onFail(
-                            p0: CosXmlRequest?,
-                            p1: CosXmlClientException?,
-                            p2: CosXmlServiceException?
-                        ) {
-                            Log.d("updateVersion", "download failed")
-                            versionUpdate.value = false
-                        }
-                    }
-                    VersionApi.downloadNewestVersion(newestVersion, progressListener, resultListener)
+                    versionRequired = newestVersion
                 }
             }
         }
+    }
+
+    private fun downloadUpdatedApk(newestVersion: Version) {
+        versionDownload.value = true
+        val progressListener = CosXmlProgressListener { complete, target ->
+            versionRate.value = (complete.toDouble()/target.toDouble()).toFloat()
+            Log.d("updateVersion", versionRate.value.toString())
+        }
+        val resultListener = object: CosXmlResultListener {
+            override fun onSuccess(p0: CosXmlRequest?, p1: CosXmlResult?) {
+                Log.d("updateVersion", "download successfully")
+                val path = externalCacheDir.toString() + "/bngelbook-${newestVersion.version}.apk"
+                val file = File(path)
+                versionDownload.value = false
+                versionRate.value = 0F
+                UiUtils.installApk(file)
+            }
+
+            override fun onFail(
+                p0: CosXmlRequest?,
+                p1: CosXmlClientException?,
+                p2: CosXmlServiceException?
+            ) {
+                Log.d("updateVersion", "download failed")
+                versionDownload.value = false
+            }
+        }
+        VersionApi.downloadNewestVersion(newestVersion, progressListener, resultListener)
     }
 
     private fun getVersionName() = try {
