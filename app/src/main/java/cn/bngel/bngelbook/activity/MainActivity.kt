@@ -7,11 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -26,26 +24,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.core.content.edit
 import cn.bngel.bngelbook.R
 import cn.bngel.bngelbook.data.CommonResult
 import cn.bngel.bngelbook.data.GlobalVariables
 import cn.bngel.bngelbook.data.MainPages
-import cn.bngel.bngelbook.data.bean.Bean
 import cn.bngel.bngelbook.data.bean.User
 import cn.bngel.bngelbook.data.bean.Version
 import cn.bngel.bngelbook.data.sharedPreferences.spApi
 import cn.bngel.bngelbook.data.snapshot.UserState
-import cn.bngel.bngelbook.network.api.UserApi
 import cn.bngel.bngelbook.network.api.VersionApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
-import cn.bngel.bngelbook.utils.TencentcloudUtils
 import cn.bngel.bngelbook.utils.UiUtils
 import com.tencent.cos.xml.exception.CosXmlClientException
 import com.tencent.cos.xml.exception.CosXmlServiceException
@@ -56,7 +48,6 @@ import com.tencent.cos.xml.model.CosXmlResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.ObjectInputStream
 import java.lang.Exception
 import java.time.LocalDate
 
@@ -346,6 +337,9 @@ class MainActivity : BaseActivity() {
                 (LocalDate.now().toEpochDay() - LocalDate.parse(user.registerDate).toEpochDay()).toInt()
             loginState.value = true
             pageState.value = MainPages.HOME_PAGE
+        }
+        else {
+            launch<LoginActivity>()
         }
         GlobalVariables.token = spApi.getToken()
     }
