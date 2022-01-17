@@ -59,5 +59,4 @@ object UiUtils {
         }
         context.startActivity(intent)
     }
-
 }
