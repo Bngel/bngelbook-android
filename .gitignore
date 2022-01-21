@@ -86,3 +86,4 @@ lint/tmp/
 
 # custom
 tencentcloudConfig.properties
+rabbitMQConfig.properties
