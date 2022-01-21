@@ -87,4 +87,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
     testImplementation "androidx.room:room-testing:$room_version"
+
+    // rabbitmq
+    implementation 'com.rabbitmq:amqp-client:5.14.1'
 }

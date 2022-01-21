@@ -38,6 +38,7 @@ import cn.bngel.bngelbook.network.api.VersionApi
 import cn.bngel.bngelbook.ui.page.*
 import cn.bngel.bngelbook.ui.theme.BngelbookTheme
 import cn.bngel.bngelbook.ui.widget.UiWidget
+import cn.bngel.bngelbook.utils.MqUtils
 import cn.bngel.bngelbook.utils.UiUtils
 import com.tencent.cos.xml.exception.CosXmlClientException
 import com.tencent.cos.xml.exception.CosXmlServiceException
@@ -98,6 +99,7 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+        MqUtils.startConsumer()
     }
 
     @Composable
