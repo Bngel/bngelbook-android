@@ -1,6 +1,5 @@
 package cn.bngel.bngelbook.utils
 
-import android.util.Log
 import cn.bngel.bngelbook.activity.ActivityManager
 import cn.bngel.bngelbook.activity.BaseActivity
 import com.rabbitmq.client.AMQP
